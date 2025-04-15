@@ -1,0 +1,50 @@
+name: money_tracker
+description: "Une application simple et intuitive pour suivre vos ventes, achats, inventaire et finances mensuelles avec un design nature apaisant."
+# Retirez cette ligne lors de la publication sur le Play Store
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  shared_preferences: ^2.2.2
+  uuid: ^4.3.3
+  intl: ^0.19.0
+  fl_chart: ^0.70.2
+  package_info_plus: ^8.3.0
+  url_launcher: ^6.2.5
+  path_provider: ^2.1.2
+  pdf: ^3.10.8
+  file_picker: ^10.1.2
+  file_selector: ^1.0.0
+  file_selector_windows: ^0.9.3
+  universal_html: ^2.2.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/fonts/
+
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Roboto-Italic.ttf
+          style: italic
+        - asset: assets/fonts/Roboto-BoldItalic.ttf
+          weight: 700
+          style: italic
