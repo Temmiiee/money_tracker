@@ -56,11 +56,18 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
   // Mettre à jour le TabController en fonction des données disponibles
   void _updateTabController() {
     // Calculer le nombre d'onglets en fonction des données disponibles
-    int tabCount = 1; // L'onglet 'Types' est toujours présent
+    int tabCount = 1; // L'onglet 'Achats/Ventes' est toujours présent
 
-    if (widget.totalSales > 0) tabCount++;
-    if (widget.totalPurchases > 0) tabCount++;
-    if (widget.totalSales > 0 || widget.totalPurchases > 0) tabCount++;
+    // Ajouter l'onglet 'Solde' seulement si on a des transactions avec catégories
+    bool hasCategories = false;
+    if (widget.transactions != null && widget.transactions!.isNotEmpty) {
+      hasCategories = widget.transactions!.any((t) =>
+        (t.type == TransactionType.sale || t.type == TransactionType.purchase) &&
+        t.categoryId != null
+      );
+    }
+
+    if (hasCategories) tabCount++;
 
     // Conserver l'index actuel si possible
     final int currentIndex = _tabController.index < tabCount ? _tabController.index : 0;
@@ -102,32 +109,18 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
     }
 
     // Sélectionner le graphique en fonction de l'onglet actif
-    // Déterminer les indices d'onglets en fonction des données disponibles
-    int salesTabIndex = -1;
-    int purchasesTabIndex = -1;
+    // Déterminer l'indice de l'onglet de solde
     int balanceTabIndex = -1;
 
-    int currentIndex = 1; // L'onglet 0 est toujours 'Types'
-
-    if (widget.totalSales > 0) {
-      salesTabIndex = currentIndex++;
-    }
-
-    if (widget.totalPurchases > 0) {
-      purchasesTabIndex = currentIndex++;
-    }
-
-    if (widget.totalSales > 0 || widget.totalPurchases > 0) {
-      balanceTabIndex = currentIndex;
+    // L'onglet 0 est toujours 'Achats/Ventes'
+    // L'onglet 1 est 'Solde' s'il existe (si _tabController.length > 1)
+    if (_tabController.length > 1) {
+      balanceTabIndex = 1;
     }
 
     // Sélectionner le graphique approprié
     if (_selectedTabIndex == 0) {
-      return _buildMainChart(); // Types (Ventes, Achats, Portefeuille)
-    } else if (_selectedTabIndex == salesTabIndex) {
-      return _buildCategoryChart(TransactionType.sale); // Catégories de ventes
-    } else if (_selectedTabIndex == purchasesTabIndex) {
-      return _buildCategoryChart(TransactionType.purchase); // Catégories d'achats
+      return _buildMainChart(); // Achats/Ventes
     } else if (_selectedTabIndex == balanceTabIndex) {
       return _buildNetCategoryChart(); // Solde net par catégorie
     } else {
@@ -138,13 +131,12 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
   Widget _buildMainChart() {
     // Calculer les valeurs pour le graphique principal
     // Pour les ventes et achats, nous utilisons les valeurs absolues
-    // Pour le solde net, nous calculons ventes - achats
+    // Pour le portefeuille, nous utilisons la valeur absolue des transactions du portefeuille
     final double salesValue = widget.totalSales;
     final double purchasesValue = widget.totalPurchases;
-    final double walletValue = widget.walletTransactions >= 0 ? widget.walletTransactions : 0;
+    final double walletValue = widget.walletTransactions.abs();
 
-    // Calculer le solde net (ventes - achats) pour l'affichage au centre
-    final double netBalance = NumberFormatter.roundToTwoDecimals(salesValue - purchasesValue);
+    // Le solde net n'est plus affiché au centre
 
     // Préparer les sections avec les valeurs appropriées
     final List<Map<String, dynamic>> sections = [
@@ -202,22 +194,19 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
             labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             unselectedLabelStyle: const TextStyle(fontSize: 12),
             tabs: [
-              Tab(text: 'Types'),
-              if (widget.totalSales > 0) Tab(text: 'Ventes'),
-              if (widget.totalPurchases > 0) Tab(text: 'Achats'),
-              if (widget.totalSales > 0 || widget.totalPurchases > 0) Tab(text: 'Solde'),
+              Tab(text: 'Achats/Ventes'),
+              if (_tabController.length > 1) Tab(text: 'Solde par catégorie'),
             ],
           ),
         ),
         // Graphique principal
         LayoutBuilder(
           builder: (context, constraints) {
-            // Taille fixe pour tous les graphiques pour assurer la cohérence
-            final double size = 180;
-            // Réduire la largeur du cercle en augmentant le rayon central et en diminuant le rayon des sections
+            // Taille encore plus réduite pour éviter le débordement
+            final double size = 150;
             final double centerRadius = 50; // Rayon central plus grand
-            final double sectionRadius = 65; // Section plus fine
-            final double expandedRadius = 70; // Section touchée plus fine
+            final double sectionRadius = 35; // Section plus fine
+            final double expandedRadius = 40; // Section touchée plus fine
 
             return SizedBox(
               height: size,
@@ -269,35 +258,7 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
                       }).toList(),
                     ),
                   ),
-                  // Afficher une légende au centre si aucune section n'est touchée
-                  if (touchedIndex == -1)
-                    Positioned.fill(
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              'Solde net',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            const SizedBox(height: 1),
-                            Text(
-                              NumberFormatter.formatEuro(netBalance),
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: netBalance >= 0 ? AppColors.success : AppColors.warning,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  // Pas de texte au centre
                 ],
               ),
             );
@@ -429,11 +390,11 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
     return LayoutBuilder(
       builder: (context, constraints) {
         // Taille fixe pour tous les graphiques pour assurer la cohérence
-        final double size = 180;
+        final double size = 150;
         // Réduire la largeur du cercle en augmentant le rayon central et en diminuant le rayon des sections
         final double centerRadius = 50; // Rayon central plus grand
-        final double sectionRadius = 65; // Section plus fine
-        final double expandedRadius = 70; // Section touchée plus fine
+        final double sectionRadius = 35; // Section plus fine
+        final double expandedRadius = 40; // Section touchée plus fine
 
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -454,10 +415,8 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
                 labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                 unselectedLabelStyle: const TextStyle(fontSize: 12),
                 tabs: [
-                  Tab(text: 'Types'),
-                  if (widget.totalSales > 0) Tab(text: 'Ventes'),
-                  if (widget.totalPurchases > 0) Tab(text: 'Achats'),
-                  if (widget.totalSales > 0 || widget.totalPurchases > 0) Tab(text: 'Solde'),
+                  Tab(text: 'Achats/Ventes'),
+                  if (_tabController.length > 1) Tab(text: 'Solde par catégorie'),
                 ],
               ),
             ),
@@ -514,38 +473,7 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
                       }).toList(),
                     ),
                   ),
-                  // Afficher une légende au centre si aucune section n'est touchée
-                  if (touchedIndex == -1)
-                    Positioned.fill(
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              'Solde',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 1),
-                            Text(
-                              NumberFormatter.formatEuro(NumberFormatter.roundToTwoDecimals(netBalanceByCategory.values.fold(0.0, (sum, value) => sum + value))),
-                              style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                                color: NumberFormatter.roundToTwoDecimals(netBalanceByCategory.values.fold(0.0, (sum, value) => sum + value)) >= 0
-                                    ? AppColors.success
-                                    : AppColors.warning,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  // Pas de texte au centre
                 ],
               ),
             ),
@@ -555,222 +483,7 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
     );
   }
 
-  // Graphique des catégories
-  Widget _buildCategoryChart(TransactionType filterType) {
-    if (widget.transactions == null || widget.transactions!.isEmpty) {
-      return const SizedBox.shrink();
-    }
 
-    // Regrouper les transactions par catégorie
-    final Map<String, double> categoryTotals = {};
-    final Map<String, Color> categoryColors = {};
-    final Map<String, String> categoryNames = {};
-
-    // Filtrer les transactions par type (vente ou achat)
-    final filteredTransactions = widget.transactions!.where(
-      (transaction) => transaction.type == filterType
-    ).toList();
-
-    // Si aucune transaction du type demandé, afficher un message
-    if (filteredTransactions.isEmpty) {
-      return Center(
-        child: Text(
-          filterType == TransactionType.sale
-              ? 'Aucune vente avec catégorie'
-              : 'Aucun achat avec catégorie',
-          style: const TextStyle(color: AppColors.textSecondary),
-        ),
-      );
-    }
-
-    // Parcourir les transactions filtrées pour calculer les totaux par catégorie
-    for (final transaction in filteredTransactions) {
-      if (transaction.categoryId != null) {
-        final category = getCategoryById(transaction.categoryId!);
-        final String categoryId = category.id;
-        final double amount = transaction.amount;
-
-        categoryTotals[categoryId] = (categoryTotals[categoryId] ?? 0) + amount;
-        categoryNames[categoryId] = category.name;
-      }
-    }
-
-    // Assigner des couleurs différentes aux catégories
-    final List<Color> categoryColorPalette = [
-      AppColors.success,
-      const Color(0xFF66BB6A), // Vert clair
-      const Color(0xFF43A047), // Vert moyen
-      const Color(0xFF2E7D32), // Vert foncé
-      const Color(0xFF1B5E20), // Vert très foncé
-      const Color(0xFF81C784), // Vert très clair
-    ];
-
-    final List<Color> purchaseColorPalette = [
-      AppColors.warning,
-      const Color(0xFFFFB74D), // Orange clair
-      const Color(0xFFFFA726), // Orange moyen
-      const Color(0xFFFF9800), // Orange foncé
-      const Color(0xFFE65100), // Orange très foncé
-      const Color(0xFFFFCC80), // Orange très clair
-    ];
-
-    final List<Color> colorPalette = filterType == TransactionType.sale
-        ? categoryColorPalette
-        : purchaseColorPalette;
-
-    int colorIndex = 0;
-    for (final categoryId in categoryTotals.keys) {
-      categoryColors[categoryId] = colorPalette[colorIndex % colorPalette.length];
-      colorIndex++;
-    }
-
-    // Si aucune catégorie, ne rien afficher
-    if (categoryTotals.isEmpty) {
-      return const Center(
-        child: Text(
-          'Aucune catégorie',
-          style: TextStyle(color: AppColors.textSecondary),
-        ),
-      );
-    }
-
-    // Préparer les sections pour le graphique
-    final List<Map<String, dynamic>> categorySections = [];
-    final double total = categoryTotals.values.fold(0.0, (sum, value) => sum + value);
-
-    int index = 0;
-    categoryTotals.forEach((categoryId, value) {
-      categorySections.add({
-        'id': categoryId,
-        'name': categoryNames[categoryId] ?? 'Inconnu',
-        'color': categoryColors[categoryId] ?? AppColors.primary,
-        'value': value,
-        'percent': value / total,
-        'index': index++,
-      });
-    });
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Taille fixe pour tous les graphiques pour assurer la cohérence
-        final double size = 180;
-        // Réduire la largeur du cercle en augmentant le rayon central et en diminuant le rayon des sections
-        final double centerRadius = 50; // Rayon central plus grand
-        final double sectionRadius = 65; // Section plus fine
-        final double expandedRadius = 70; // Section touchée plus fine
-
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Onglets pour basculer entre les vues
-            Container(
-              margin: const EdgeInsets.only(bottom: AppSizes.m),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(AppSizes.s),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                labelColor: AppColors.primary,
-                unselectedLabelColor: AppColors.textSecondary,
-                indicatorColor: AppColors.primary,
-                indicatorSize: TabBarIndicatorSize.label,
-                labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                unselectedLabelStyle: const TextStyle(fontSize: 12),
-                tabs: [
-                  Tab(text: 'Types'),
-                  if (widget.totalSales > 0) Tab(text: 'Ventes'),
-                  if (widget.totalPurchases > 0) Tab(text: 'Achats'),
-                  if (widget.totalSales > 0 || widget.totalPurchases > 0) Tab(text: 'Solde'),
-                ],
-              ),
-            ),
-            // Graphique des catégories
-            SizedBox(
-              height: size,
-              width: size,
-              child: Stack(
-                children: [
-                  PieChart(
-                    PieChartData(
-                      sectionsSpace: 0,
-                      centerSpaceRadius: centerRadius,
-                      pieTouchData: PieTouchData(
-                        touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                          setState(() {
-                            if (!event.isInterestedForInteractions ||
-                                pieTouchResponse == null ||
-                                pieTouchResponse.touchedSection == null) {
-                              touchedIndex = -1;
-                              return;
-                            }
-                            // Vérifier si la section touchée a une valeur non nulle
-                            final sectionIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
-                            if (sectionIndex >= 0 && sectionIndex < categorySections.length) {
-                              final section = categorySections[sectionIndex];
-                              if (section['value'] > 0) {
-                                touchedIndex = sectionIndex;
-                              }
-                            }
-                          });
-                        },
-                      ),
-                      sections: categorySections.map((section) {
-                        final int index = section['index'];
-                        final bool isTouched = touchedIndex == index;
-
-                        return PieChartSectionData(
-                          color: section['color'],
-                          value: section['value'],
-                          title: '',
-                          radius: isTouched ? expandedRadius : sectionRadius,
-                          titleStyle: const TextStyle(fontSize: 0),
-                          badgeWidget: isTouched ? _Badge(
-                            section['name'],
-                            section['color'],
-                            NumberFormatter.formatEuro(section['value']),
-                            '${(section['percent'] * 100).toStringAsFixed(0)}%',
-                          ) : null,
-                          badgePositionPercentageOffset: .98,
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  // Afficher une légende au centre si aucune section n'est touchée
-                  if (touchedIndex == -1)
-                    Positioned.fill(
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              filterType == TransactionType.sale ? 'Ventes' : 'Achats',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              NumberFormatter.formatEuro(total),
-                              style: const TextStyle(
-                                fontSize: 10,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }
 
 // Widget pour afficher un badge sur la section touchée
