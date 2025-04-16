@@ -46,8 +46,11 @@ class _HomeScreenState extends State<HomeScreen> {
       // Trier les transactions par date (les plus récentes d'abord)
       transactions.sort((a, b) => b.date.compareTo(a.date));
 
-      // Prendre les 5 transactions les plus récentes (toutes catégories confondues)
-      final recentTransactions = transactions.take(5).toList();
+      // Prendre les 5 transactions les plus récentes (en excluant les transactions du portefeuille)
+      final recentTransactions = transactions
+          .where((t) => t.type != TransactionType.wallet)
+          .take(5)
+          .toList();
 
       if (mounted) {
         setState(() {
@@ -194,57 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Cette méthode est utilisée comme référence pour le style des cartes
-  Widget _buildSummaryCard(String title, double amount, Color color) {
-    return Card(
-      elevation: 0.5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-        side: BorderSide(color: Colors.grey.shade200),
-      ),
-      color: color == AppColors.success ? AppColors.cardSuccess :
-             color == AppColors.danger ? AppColors.cardDanger :
-             color == AppColors.warning ? AppColors.cardWarning : AppColors.cardPrimary,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSizes.m),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 14,
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: AppSizes.s),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.s),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppSizes.s),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(10),
-                    blurRadius: 2,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: Text(
-                NumberFormatter.formatEuro(amount),
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Méthode supprimée car non utilisée
 
   // Méthode pour construire une ligne de résumé compacte
   Widget _buildCompactSummaryRow(String title, double amount, Color color, IconData icon) {
@@ -496,8 +449,29 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const SizedBox(height: AppSizes.s),
                                 const Divider(height: 1),
                                 const SizedBox(height: AppSizes.s),
-                                // Note: Le portefeuille est maintenant équivalent au solde global
-                                // Nous n'affichons donc plus cette ligne pour éviter la confusion
+                                // Afficher les transactions du portefeuille
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Portefeuille:', style: TextStyle(fontWeight: FontWeight.w500)),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.xs),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.primary.withAlpha(30),
+                                        borderRadius: BorderRadius.circular(AppSizes.xs),
+                                      ),
+                                      child: Text(
+                                        _walletTransactions >= 0
+                                          ? '+${NumberFormatter.formatEuro(NumberFormatter.roundToTwoDecimals(_walletTransactions))}'
+                                          : '-${NumberFormatter.formatEuro(NumberFormatter.roundToTwoDecimals(_walletTransactions.abs()))}',
+                                        style: TextStyle(
+                                          color: _walletTransactions >= 0 ? AppColors.success : AppColors.danger,
+                                          fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
                               ],
                             ),
                           ),

@@ -6,11 +6,13 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import '../services/data_export_service.dart';
 import '../localization/app_localizations.dart';
+import '../services/theme_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function(Locale)? onLanguageChanged;
+  final Function(ThemeMode)? onThemeChanged;
 
-  const SettingsScreen({super.key, this.onLanguageChanged});
+  const SettingsScreen({super.key, this.onLanguageChanged, this.onThemeChanged});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -44,9 +46,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(AppSizes.m),
         children: [
-          // Section Langue
-          _buildSectionHeader('Langue'),
+          // Section Apparence
+          _buildSectionHeader('Apparence'),
           _buildLanguageCard(),
+          _buildThemeCard(),
 
           const SizedBox(height: AppSizes.l),
 
@@ -119,21 +122,48 @@ class _SettingsScreenState extends State<SettingsScreen> {
           }
 
           return ListTile(
-            leading: const Icon(
+            leading: Icon(
               Icons.language,
               color: AppColors.primary,
             ),
-            title: const Text(
+            title: Text(
               'Langue de l\'application',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
               ),
             ),
             subtitle: Text(languageText),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            trailing: Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () => _showLanguageDialog(),
           );
         },
+      ),
+    );
+  }
+
+  // Carte pour le thème
+  Widget _buildThemeCard() {
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: AppSizes.s),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+        side: BorderSide(color: Colors.grey.shade200),
+      ),
+      child: ListTile(
+        leading: Icon(
+          Icons.dark_mode,
+          color: AppColors.primary,
+        ),
+        title: Text(
+          'Thème de l\'application',
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        subtitle: Text(Theme.of(context).brightness == Brightness.dark ? 'Mode nuit' : 'Mode jour'),
+        trailing: Icon(Icons.arrow_forward_ios, size: 16),
+        onTap: () => _showThemeDialog(),
       ),
     );
   }
@@ -144,18 +174,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Choisir la langue'),
+          title: Text('Choisir la langue'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: const Text('Français'),
-                leading: const Icon(Icons.check, color: AppColors.primary),
+                title: Text('Français'),
+                leading: Icon(Icons.check, color: AppColors.primary),
                 onTap: () => _changeLanguage('fr'),
               ),
               ListTile(
-                title: const Text('English'),
-                leading: const Icon(Icons.language),
+                title: Text('English'),
+                leading: Icon(Icons.language),
                 onTap: () => _changeLanguage('en'),
               ),
             ],
@@ -163,12 +193,67 @@ class _SettingsScreenState extends State<SettingsScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Annuler'),
+              child: Text('Annuler'),
             ),
           ],
         );
       },
     );
+  }
+
+  // Boîte de dialogue pour changer le thème
+  void _showThemeDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Choisir le thème'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text('Mode jour'),
+                leading: Icon(Icons.light_mode, color: AppColors.warning),
+                onTap: () => _changeTheme(ThemeMode.light),
+              ),
+              ListTile(
+                title: Text('Mode nuit'),
+                leading: Icon(Icons.dark_mode, color: AppColors.primary),
+                onTap: () => _changeTheme(ThemeMode.dark),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Annuler'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Changer le thème
+  void _changeTheme(ThemeMode themeMode) async {
+    await ThemeService.setThemeMode(themeMode);
+    if (mounted) {
+      Navigator.pop(context); // Fermer la boîte de dialogue
+
+      // Notifier le widget parent du changement de thème
+      if (widget.onThemeChanged != null) {
+        widget.onThemeChanged!(themeMode);
+      }
+
+      // Afficher un message de confirmation
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Thème changé en ${themeMode == ThemeMode.dark ? 'mode nuit' : 'mode jour'}'),
+          backgroundColor: AppColors.success,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   // Changer la langue
@@ -205,7 +290,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.only(left: AppSizes.s, bottom: AppSizes.s),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
           color: AppColors.primary,
@@ -363,7 +448,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // Afficher un message de succès
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Données importées avec succès'),
             backgroundColor: AppColors.success,
             duration: Duration(seconds: 2),
@@ -455,7 +540,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // Afficher un message de succès
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Données réinitialisées avec succès'),
             backgroundColor: AppColors.success,
             duration: Duration(seconds: 2),

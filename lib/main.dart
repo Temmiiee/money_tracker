@@ -13,6 +13,7 @@ import 'screens/splash_screen.dart';
 import 'screens/settings_screen.dart';
 import 'utils/constants.dart';
 import 'localization/app_localizations.dart';
+import 'services/theme_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +28,9 @@ void main() async {
   // Obtenir la locale sauvegardée
   final locale = await AppLocalizations.getLocale();
 
+  // Obtenir le thème sauvegardé
+  final themeMode = await ThemeService.getThemeMode();
+
   // Définir l'orientation de l'application (portrait uniquement)
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -34,18 +38,19 @@ void main() async {
   ]);
 
   // Définir la couleur de la barre d'état
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
+    statusBarIconBrightness: themeMode == ThemeMode.dark ? Brightness.light : Brightness.dark,
   ));
 
-  runApp(MainApp(locale: locale));
+  runApp(MainApp(locale: locale, themeMode: themeMode));
 }
 
 class MainApp extends StatefulWidget {
   final Locale locale;
+  final ThemeMode themeMode;
 
-  const MainApp({super.key, required this.locale});
+  const MainApp({super.key, required this.locale, required this.themeMode});
 
   @override
   State<MainApp> createState() => _MainAppState();
@@ -53,11 +58,13 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   late Locale _locale;
+  late ThemeMode _themeMode;
 
   @override
   void initState() {
     super.initState();
     _locale = widget.locale;
+    _themeMode = widget.themeMode;
   }
 
   // Méthode pour mettre à jour la langue
@@ -67,12 +74,20 @@ class _MainAppState extends State<MainApp> {
     });
   }
 
+  // Méthode pour mettre à jour le thème
+  void setThemeMode(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: AppTexts.appName,
       debugShowCheckedModeBanner: false,
       locale: _locale,
+      themeMode: _themeMode,
       supportedLocales: AppLocalizations.supportedLocales(),
       localizationsDelegates: [
         AppLocalizationsDelegate(),
@@ -80,6 +95,7 @@ class _MainAppState extends State<MainApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      // Thème clair
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primary,
@@ -101,12 +117,12 @@ class _MainAppState extends State<MainApp> {
         // fontFamily: 'Poppins', // Commenté temporairement
 
         // AppBar plus douce
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           centerTitle: true,
           elevation: 0,
-          titleTextStyle: TextStyle(
+          titleTextStyle: const TextStyle(
             // fontFamily: 'Poppins', // Commenté temporairement
             fontWeight: FontWeight.w500, // Moins gras
             fontSize: 20,
@@ -141,10 +157,10 @@ class _MainAppState extends State<MainApp> {
             horizontal: AppSizes.m,
             vertical: AppSizes.m,
           ),
-          floatingLabelStyle: const TextStyle(color: AppColors.primary),
+          floatingLabelStyle: TextStyle(color: AppColors.primary),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSizes.s),
-            borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSizes.s),
@@ -190,7 +206,7 @@ class _MainAppState extends State<MainApp> {
         ),
 
         // Thème de texte amélioré
-        textTheme: const TextTheme(
+        textTheme: TextTheme(
           displayLarge: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
           displayMedium: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
           displaySmall: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
@@ -263,10 +279,150 @@ class _MainAppState extends State<MainApp> {
 
         useMaterial3: true,
       ),
+      // Thème sombre
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.dark(
+          primary: AppColors.primary,
+          secondary: AppColors.secondary,
+          surface: AppColors.surface,
+          // background est déprécié, utiliser surface à la place
+          // background: AppColors.background,
+          error: AppColors.error,
+          onPrimary: Colors.white,
+          onSecondary: Colors.white,
+          onSurface: AppColors.textPrimary,
+          // onBackground est déprécié, utiliser onSurface à la place
+          // onBackground: AppColors.textPrimary,
+          onError: Colors.white,
+          brightness: Brightness.dark,
+        ),
+        scaffoldBackgroundColor: AppColors.background,
+        appBarTheme: AppBarTheme(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          elevation: 0,
+          titleTextStyle: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 20,
+          ),
+        ),
+        cardTheme: CardTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+            side: BorderSide(color: Colors.grey.shade800),
+          ),
+          elevation: 0.5,
+          color: AppColors.surface,
+          shadowColor: Colors.black.withAlpha(50),
+          margin: const EdgeInsets.symmetric(vertical: AppSizes.xs),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: AppColors.surface,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSizes.m,
+            vertical: AppSizes.m,
+          ),
+          floatingLabelStyle: TextStyle(color: AppColors.primary),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppSizes.s),
+            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppSizes.s),
+            borderSide: BorderSide(color: AppColors.error.withAlpha(204), width: 1),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppSizes.s),
+            borderSide: BorderSide(color: Colors.grey.shade700),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppSizes.s),
+            borderSide: BorderSide(color: Colors.grey.shade700),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: AppColors.primary,
+            elevation: 1,
+            shadowColor: Colors.black.withAlpha(50),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: AppSizes.m,
+              horizontal: AppSizes.l,
+            ),
+            textStyle: const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        dividerTheme: DividerThemeData(
+          color: Colors.grey.shade700,
+          thickness: 1,
+          space: AppSizes.s,
+        ),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: WidgetStateProperty.resolveWith<Color>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.grey.shade700;
+              }
+              return AppColors.primary;
+            },
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.xs),
+          ),
+        ),
+        radioTheme: RadioThemeData(
+          fillColor: WidgetStateProperty.resolveWith<Color>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.grey.shade700;
+              }
+              return AppColors.primary;
+            },
+          ),
+        ),
+        switchTheme: SwitchThemeData(
+          thumbColor: WidgetStateProperty.resolveWith<Color>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.grey.shade700;
+              }
+              if (states.contains(WidgetState.selected)) {
+                return AppColors.primary;
+              }
+              return Colors.grey.shade400;
+            },
+          ),
+          trackColor: WidgetStateProperty.resolveWith<Color>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.grey.shade800;
+              }
+              if (states.contains(WidgetState.selected)) {
+                return AppColors.primary.withAlpha(76);
+              }
+              return Colors.grey.shade700;
+            },
+          ),
+        ),
+        useMaterial3: true,
+      ),
+
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(nextScreen: MainScreen()),
-        '/settings': (context) => SettingsScreen(onLanguageChanged: (locale) => setLocale(locale)),
+        '/settings': (context) => SettingsScreen(
+          onLanguageChanged: (locale) => setLocale(locale),
+          onThemeChanged: (themeMode) => setThemeMode(themeMode),
+        ),
       },
     );
   }

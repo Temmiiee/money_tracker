@@ -32,7 +32,7 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
   final List<Map<String, dynamic>> _mainSections = [
     {'name': 'Ventes', 'color': AppColors.success, 'icon': Icons.trending_up, 'type': TransactionType.sale},
     {'name': 'Achats', 'color': AppColors.warning, 'icon': Icons.trending_down, 'type': TransactionType.purchase},
-    {'name': 'Portefeuille', 'color': AppColors.primary, 'icon': Icons.account_balance_wallet, 'type': TransactionType.wallet},
+    {'name': 'Portefeuille', 'color': AppColors.wallet, 'icon': Icons.account_balance_wallet, 'type': TransactionType.wallet},
   ];
 
   @override

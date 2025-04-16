@@ -60,8 +60,7 @@ class DataExportService {
       final totalPurchases = await _storageService.getCurrentMonthPurchases();
       final balance = await _storageService.getGlobalBalance();
 
-      // Créer un document PDF avec une police qui prend en charge les caractères Unicode
-      // Utiliser une police par défaut qui prend en charge l'euro
+      // Créer un document PDF simple
       final pdf = pw.Document();
 
       // Note: Nous utilisons la police par défaut de la bibliothèque PDF
