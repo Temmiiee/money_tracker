@@ -5,6 +5,7 @@ import '../utils/constants.dart';
 import '../utils/number_formatter.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import '../localization/app_localizations.dart';
 
 class TransactionCard extends StatefulWidget {
   final Transaction transaction;
@@ -102,13 +103,21 @@ class _TransactionCardState extends State<TransactionCard> {
 
     if (isWallet) {
       final bool isDeposit = transaction.isDeposit ?? false;
-      cardColor = isDeposit ? AppColors.cardSuccess : AppColors.cardDanger;
-      amountColor = isDeposit ? AppColors.success : AppColors.danger;
+      cardColor = isDeposit
+        ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardSuccess : AppColors.lightCardSuccess)
+        : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardDanger : AppColors.lightCardDanger);
+      amountColor = isDeposit
+        ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkSuccess : AppColors.lightSuccess)
+        : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkDanger : AppColors.lightDanger);
       amountPrefix = isDeposit ? '+' : '-';
       typeIcon = isDeposit ? Icons.add_circle_outline : Icons.remove_circle_outline;
     } else {
-      cardColor = isSale ? AppColors.cardSuccess : AppColors.cardWarning;
-      amountColor = isSale ? AppColors.success : AppColors.warning;
+      cardColor = isSale
+        ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardSuccess : AppColors.lightCardSuccess)
+        : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardWarning : AppColors.lightCardWarning);
+      amountColor = isSale
+        ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkSuccess : AppColors.lightSuccess)
+        : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkWarning : AppColors.lightWarning);
       amountPrefix = isSale ? '+' : '-';
       typeIcon = isSale ? Icons.arrow_upward : Icons.arrow_downward;
     }
@@ -118,7 +127,7 @@ class _TransactionCardState extends State<TransactionCard> {
       margin: const EdgeInsets.symmetric(vertical: AppSizes.s),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
       ),
       color: cardColor,
       child: InkWell(
@@ -132,7 +141,7 @@ class _TransactionCardState extends State<TransactionCard> {
               Container(
                 padding: const EdgeInsets.all(AppSizes.s),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
                   border: Border.all(color: amountColor.withAlpha(100), width: 1),
                   borderRadius: BorderRadius.circular(AppSizes.s),
                 ),
@@ -149,26 +158,26 @@ class _TransactionCardState extends State<TransactionCard> {
                   children: [
                     Text(
                       widget.transaction.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: AppColors.textPrimary,
+                        color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
                       ),
                     ),
                     const SizedBox(height: AppSizes.xs),
                     Text(
                       _dateFormatter.format(widget.transaction.date),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
                       ),
                     ),
                     if (widget.transaction.quantity != null)
                       Text(
-                        'Quantité: ${widget.transaction.quantity}',
-                        style: const TextStyle(
+                        '${AppLocalizations.of(context).translate('quantity')}: ${widget.transaction.quantity}',
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textSecondary,
+                          color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
                         ),
                       ),
                     if (widget.transaction.categoryId != null)
@@ -179,7 +188,7 @@ class _TransactionCardState extends State<TransactionCard> {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.cardPrimary,
+                          color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardPrimary : AppColors.lightCardPrimary,
                           borderRadius: BorderRadius.circular(AppSizes.xs),
                         ),
                         child: Row(
@@ -188,14 +197,14 @@ class _TransactionCardState extends State<TransactionCard> {
                             Icon(
                               _getCategoryIcon(widget.transaction.categoryId!),
                               size: 14,
-                              color: AppColors.primary,
+                              color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               getCategoryById(widget.transaction.categoryId!).name,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
-                                color: AppColors.primary,
+                                color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -230,9 +239,9 @@ class _TransactionCardState extends State<TransactionCard> {
                       // Bouton d'édition
                       if (widget.onEdit != null)
                         IconButton(
-                          icon: const Icon(Icons.edit_outlined, color: AppColors.primary),
+                          icon: Icon(Icons.edit_outlined, color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary),
                           onPressed: () => widget.onEdit!(widget.transaction),
-                          tooltip: 'Modifier',
+                          tooltip: AppLocalizations.of(context).translate('edit'),
                           constraints: const BoxConstraints(),
                           padding: const EdgeInsets.only(left: AppSizes.s),
                           iconSize: 20,
@@ -240,9 +249,9 @@ class _TransactionCardState extends State<TransactionCard> {
                       // Bouton de suppression
                       if (widget.onDelete != null)
                         IconButton(
-                          icon: const Icon(Icons.delete_outline, color: AppColors.danger),
+                          icon: Icon(Icons.delete_outline, color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkDanger : AppColors.lightDanger),
                           onPressed: () => _showDeleteConfirmation(context),
-                          tooltip: 'Supprimer',
+                          tooltip: AppLocalizations.of(context).translate('delete'),
                           constraints: const BoxConstraints(),
                           padding: const EdgeInsets.only(left: AppSizes.s),
                           iconSize: 20,

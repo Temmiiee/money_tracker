@@ -44,15 +44,19 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isLowStock = product.isLowStock();
-    final Color stockColor = isLowStock ? AppColors.danger : AppColors.success;
-    final Color cardColor = isLowStock ? AppColors.cardDanger : AppColors.cardSuccess;
+    final Color stockColor = isLowStock
+      ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkDanger : AppColors.lightDanger)
+      : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkSuccess : AppColors.lightSuccess);
+    final Color cardColor = isLowStock
+      ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardDanger : AppColors.lightCardDanger)
+      : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardSuccess : AppColors.lightCardSuccess);
 
     return Card(
       elevation: 0.5,
       margin: const EdgeInsets.symmetric(vertical: AppSizes.s),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
       ),
       color: cardColor,
       child: InkWell(
@@ -65,13 +69,13 @@ class ProductCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSizes.s),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: AppColors.primary.withAlpha(100), width: 1),
+                  color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
+                  border: Border.all(color: (Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary).withAlpha(100), width: 1),
                   borderRadius: BorderRadius.circular(AppSizes.s),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.inventory_2_outlined,
-                  color: AppColors.primary,
+                  color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
                   size: AppSizes.iconSize,
                 ),
               ),
@@ -82,18 +86,18 @@ class ProductCard extends StatelessWidget {
                   children: [
                     Text(
                       product.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: AppColors.textPrimary,
+                        color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
                       ),
                     ),
                     const SizedBox(height: AppSizes.xs),
                     Text(
                       'Prix: ${product.price.toStringAsFixed(2)} €',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
                       ),
                     ),
                   ],
@@ -133,7 +137,7 @@ class ProductCard extends StatelessWidget {
                   // Bouton de suppression
                   if (onDelete != null)
                     IconButton(
-                      icon: const Icon(Icons.delete_outline, color: AppColors.danger),
+                      icon: Icon(Icons.delete_outline, color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkDanger : AppColors.lightDanger),
                       onPressed: () => _showDeleteConfirmation(context),
                       tooltip: 'Supprimer',
                       constraints: const BoxConstraints(),

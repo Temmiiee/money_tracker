@@ -7,6 +7,7 @@ import '../models/transaction.dart';
 import '../models/product.dart';
 import '../utils/number_formatter.dart';
 import 'edit_transaction_screen.dart';
+import '../localization/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -69,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
         // Gérer l'erreur
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erreur lors du chargement des données')),
+          SnackBar(content: Text(AppLocalizations.of(context).translate('error_loading_data'))),
         );
       }
     }
@@ -137,13 +138,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Transaction supprimée avec succès')),
+          SnackBar(content: Text(AppLocalizations.of(context).translate('transaction_deleted'))),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erreur lors de la suppression de la transaction')),
+          SnackBar(content: Text(AppLocalizations.of(context).translate('error_deleting_transaction'))),
         );
       }
     }
@@ -197,51 +198,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Méthode supprimée car non utilisée
-
-  // Méthode pour construire une ligne de résumé compacte
-  Widget _buildCompactSummaryRow(String title, double amount, Color color, IconData icon) {
-    return Row(
-      children: [
-        Icon(icon, color: color, size: 20),
-        const SizedBox(width: AppSizes.s),
-        Expanded(
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary,
-            ),
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSizes.s,
-            vertical: AppSizes.xs,
-          ),
-          decoration: BoxDecoration(
-            color: color.withAlpha(25),
-            borderRadius: BorderRadius.circular(AppSizes.s),
-          ),
-          child: Text(
-            NumberFormatter.formatEuro(NumberFormatter.roundToTwoDecimals(amount)),
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Money Tracker'),
+        title: Text(AppLocalizations.of(context).translate(AppTexts.appName)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: AppColors.primary,
@@ -269,12 +230,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Bonjour !',
+                            Text(
+                              AppLocalizations.of(context).translate('hello'),
                               style: TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
+                                color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
                               ),
                             ),
                           ],
@@ -286,67 +247,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: AppSizes.l),
 
-                  // Cartes de résumé avec graphique circulaire
-                  Card(
-                    elevation: 1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-                      side: BorderSide(color: Colors.grey.shade200),
-                    ),
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppSizes.m),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Colonne de gauche avec les cartes de résumé
-                          Expanded(
-                            flex: 3,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                _buildCompactSummaryRow(
-                                  AppTexts.earnedThisMonth,
-                                  _totalSales,
-                                  AppColors.success,
-                                  Icons.trending_up,
-                                ),
-                                const SizedBox(height: AppSizes.s),
-                                const Divider(height: 1),
-                                const SizedBox(height: AppSizes.s),
-                                _buildCompactSummaryRow(
-                                  AppTexts.spentThisMonth,
-                                  _totalPurchases,
-                                  AppColors.warning,
-                                  Icons.trending_down,
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Colonne de droite avec le graphique circulaire
-                          Expanded(
-                            flex: 2,
-                            child: ExpensePieChart(
-                              totalSales: _totalSales,
-                              totalPurchases: _totalPurchases,
-                              walletTransactions: _walletTransactions,
-                              transactions: _recentTransactions,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: AppSizes.m),
-
                   // Carte pour le solde global (plus visible)
                   Card(
                     elevation: 1,
-                    color: _balance >= 0 ? AppColors.cardSuccess : AppColors.cardWarning,
+                    color: _balance >= 0
+                      ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardSuccess : AppColors.lightCardSuccess)
+                      : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardWarning : AppColors.lightCardWarning),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-                      side: BorderSide(color: Colors.grey.shade200),
+                      side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(AppSizes.m),
@@ -356,17 +265,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                AppTexts.remainingMoney,
+                              Text(
+                                AppLocalizations.of(context).translate('remaining_money'),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.textPrimary,
+                                  color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
                                 ),
                               ),
                                           Icon(
                                 _balance >= 0 ? Icons.spa : Icons.water_drop,
-                                color: _balance >= 0 ? AppColors.success : AppColors.warning,
+                                color: _balance >= 0
+                                  ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkSuccess : AppColors.lightSuccess)
+                                  : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkWarning : AppColors.lightWarning),
                               ),
                             ],
                           ),
@@ -376,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.symmetric(vertical: AppSizes.m, horizontal: AppSizes.l),
                             margin: const EdgeInsets.symmetric(horizontal: AppSizes.m),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
                               borderRadius: BorderRadius.circular(AppSizes.m),
                               boxShadow: [
                                 BoxShadow(
@@ -391,7 +302,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,
-                                color: _balance >= 0 ? AppColors.success : AppColors.warning,
+                                color: _balance >= 0
+                                  ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkSuccess : AppColors.lightSuccess)
+                                  : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkWarning : AppColors.lightWarning),
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -403,16 +316,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           Container(
                             padding: const EdgeInsets.all(AppSizes.m),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
                               borderRadius: BorderRadius.circular(AppSizes.s),
-                              border: Border.all(color: Colors.grey.shade200),
+                              border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
                             ),
                             child: Column(
                               children: [
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text('Ventes:', style: TextStyle(fontWeight: FontWeight.w500)),
+                                    Text(AppLocalizations.of(context).translate('sales'), style: TextStyle(fontWeight: FontWeight.w500)),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.xs),
                                       decoration: BoxDecoration(
@@ -432,7 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text('Achats:', style: TextStyle(fontWeight: FontWeight.w500)),
+                                    Text(AppLocalizations.of(context).translate('purchases'), style: TextStyle(fontWeight: FontWeight.w500)),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.xs),
                                       decoration: BoxDecoration(
@@ -453,7 +366,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text('Portefeuille:', style: TextStyle(fontWeight: FontWeight.w500)),
+                                    Text('${AppLocalizations.of(context).translate('wallet')}:', style: TextStyle(fontWeight: FontWeight.w500)),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.xs),
                                       decoration: BoxDecoration(
@@ -465,7 +378,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ? '+${NumberFormatter.formatEuro(NumberFormatter.roundToTwoDecimals(_walletTransactions))}'
                                           : '-${NumberFormatter.formatEuro(NumberFormatter.roundToTwoDecimals(_walletTransactions.abs()))}',
                                         style: TextStyle(
-                                          color: _walletTransactions >= 0 ? AppColors.success : AppColors.danger,
+                                          color: _walletTransactions >= 0
+                                            ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkSuccess : AppColors.lightSuccess)
+                                            : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkDanger : AppColors.lightDanger),
                                           fontWeight: FontWeight.bold
                                         ),
                                       ),
@@ -480,6 +395,46 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
+                  const SizedBox(height: AppSizes.m),
+
+                  // Graphique circulaire
+                  Card(
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+                      side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
+                    ),
+                    color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSizes.m),
+                      child: Column(
+                        children: [
+                          // Titre du graphique
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: AppSizes.s),
+                            child: Text(
+                              AppLocalizations.of(context).translate('financial_distribution'),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                              ),
+                            ),
+                          ),
+                          // Graphique circulaire centré
+                          Center(
+                            child: ExpensePieChart(
+                              totalSales: _totalSales,
+                              totalPurchases: _totalPurchases,
+                              walletTransactions: _walletTransactions,
+                              transactions: _recentTransactions,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
                   const SizedBox(height: AppSizes.l),
 
                   // Transactions récentes
@@ -487,30 +442,30 @@ class _HomeScreenState extends State<HomeScreen> {
                     elevation: 1,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-                      side: BorderSide(color: Colors.grey.shade200),
+                      side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
                     ),
-                    color: Colors.white,
+                    color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
                     child: Padding(
                       padding: const EdgeInsets.all(AppSizes.m),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Transactions récentes',
+                          Text(
+                            AppLocalizations.of(context).translate('recent_transactions'),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
+                              color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
                             ),
                           ),
                           const SizedBox(height: AppSizes.m),
                           _recentTransactions.isEmpty
-                              ? const Center(
+                              ? Center(
                                   child: Padding(
-                                    padding: EdgeInsets.all(AppSizes.s),
+                                    padding: const EdgeInsets.all(AppSizes.s),
                                     child: Text(
-                                      'Aucune transaction récente',
-                                      style: TextStyle(color: AppColors.textSecondary),
+                                      AppLocalizations.of(context).translate('no_recent_transactions'),
+                                      style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
                                     ),
                                   ),
                                 )

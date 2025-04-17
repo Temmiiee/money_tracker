@@ -27,7 +27,7 @@ class AppLocalizations {
   }
   
   // Méthode pour obtenir les traductions
-  static Map<String, Map<String, String>> _localizedValues = {
+  static final Map<String, Map<String, String>> _localizedValues = {
     'fr': french,
     'en': english,
   };

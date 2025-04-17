@@ -6,6 +6,7 @@ import '../widgets/product_card.dart';
 import '../widgets/custom_button.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
+import '../localization/app_localizations.dart';
 
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key});
@@ -49,7 +50,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erreur lors du chargement des produits')),
+          SnackBar(content: Text(AppLocalizations.of(context).translate('error_loading_products'))),
         );
       }
     }
@@ -64,7 +65,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Ajouter un produit'),
+        title: Text(AppLocalizations.of(context).translate('add_product')),
         content: Form(
           key: formKey,
           child: SingleChildScrollView(
@@ -73,13 +74,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
               children: [
                 TextFormField(
                   controller: nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nom du produit',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).translate('product_name'),
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer un nom';
+                      return AppLocalizations.of(context).translate('please_enter_name');
                     }
                     return null;
                   },
@@ -89,9 +90,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
                 TextFormField(
                   controller: priceController,
-                  decoration: const InputDecoration(
-                    labelText: 'Prix de vente/u',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).translate('selling_price_per_unit'),
+                    border: const OutlineInputBorder(),
                     suffixText: '€',
                   ),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -100,10 +101,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer un prix';
+                      return AppLocalizations.of(context).translate('please_enter_price');
                     }
                     if (double.tryParse(value) == null) {
-                      return 'Veuillez entrer un prix valide';
+                      return AppLocalizations.of(context).translate('please_enter_valid_price');
                     }
                     return null;
                   },
@@ -113,9 +114,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
                 TextFormField(
                   controller: quantityController,
-                  decoration: const InputDecoration(
-                    labelText: 'Quantité en stock',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).translate('stock_quantity'),
+                    border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.number,
                   inputFormatters: [
@@ -123,11 +124,11 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer une quantité';
+                      return AppLocalizations.of(context).translate('enter_quantity');
                     }
                     final quantity = int.tryParse(value);
                     if (quantity == null || quantity < 0) {
-                      return 'La quantité doit être positive';
+                      return AppLocalizations.of(context).translate('quantity_must_be_positive');
                     }
                     return null;
                   },
@@ -179,7 +180,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Modifier le produit'),
+        title: Text(AppLocalizations.of(context).translate('edit_product')),
         content: Form(
           key: formKey,
           child: SingleChildScrollView(
@@ -188,13 +189,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
               children: [
                 TextFormField(
                   controller: nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nom du produit',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).translate('product_name'),
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer un nom';
+                      return AppLocalizations.of(context).translate('please_enter_name');
                     }
                     return null;
                   },
@@ -204,9 +205,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
                 TextFormField(
                   controller: priceController,
-                  decoration: const InputDecoration(
-                    labelText: 'Prix de vente/u',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).translate('selling_price_per_unit'),
+                    border: const OutlineInputBorder(),
                     suffixText: '€',
                   ),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -215,10 +216,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer un prix';
+                      return AppLocalizations.of(context).translate('please_enter_price');
                     }
                     if (double.tryParse(value) == null) {
-                      return 'Veuillez entrer un prix valide';
+                      return AppLocalizations.of(context).translate('please_enter_valid_price');
                     }
                     return null;
                   },
@@ -228,9 +229,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
                 TextFormField(
                   controller: quantityController,
-                  decoration: const InputDecoration(
-                    labelText: 'Quantité en stock',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).translate('stock_quantity'),
+                    border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.number,
                   inputFormatters: [
@@ -238,11 +239,11 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer une quantité';
+                      return AppLocalizations.of(context).translate('enter_quantity');
                     }
                     final quantity = int.tryParse(value);
                     if (quantity == null || quantity < 0) {
-                      return 'La quantité doit être positive';
+                      return AppLocalizations.of(context).translate('quantity_must_be_positive');
                     }
                     return null;
                   },
@@ -291,7 +292,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppTexts.inventoryTitle),
+        title: Text(AppLocalizations.of(context).translate(AppTexts.inventoryTitle)),
         actions: [
           IconButton(
             icon: Icon(
@@ -303,7 +304,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 _showLowStockOnly = !_showLowStockOnly;
               });
             },
-            tooltip: 'Afficher uniquement les stocks bas',
+            tooltip: AppLocalizations.of(context).translate('show_low_stock_only'),
           ),
         ],
       ),
@@ -316,17 +317,17 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   // En-tête avec statistiques
                   Container(
                     padding: const EdgeInsets.all(AppSizes.m),
-                    color: AppColors.primary.withAlpha(25),
+                    color: (Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary).withAlpha(25),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _buildStatCard(
-                          'Total produits',
+                          AppLocalizations.of(context).translate('total_products'),
                           _products.length.toString(),
                           Icons.inventory_2_outlined,
                         ),
                         _buildStatCard(
-                          'À réapprovisionner',
+                          AppLocalizations.of(context).translate('to_restock'),
                           _lowStockProducts.length.toString(),
                           Icons.warning_amber_rounded,
                           _lowStockProducts.isNotEmpty ? AppColors.warning : null,
@@ -342,25 +343,25 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.inventory_2_outlined,
                                   size: 64,
-                                  color: AppColors.textHint,
+                                  color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextHint : AppColors.lightTextHint,
                                 ),
                                 const SizedBox(height: AppSizes.m),
                                 Text(
                                   _showLowStockOnly
-                                      ? 'Aucun produit à réapprovisionner'
-                                      : 'Aucun produit en stock',
-                                  style: const TextStyle(
-                                    color: AppColors.textSecondary,
+                                      ? AppLocalizations.of(context).translate('no_products_to_restock')
+                                      : AppLocalizations.of(context).translate('no_products'),
+                                  style: TextStyle(
+                                    color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
                                     fontSize: 16,
                                   ),
                                 ),
                                 const SizedBox(height: AppSizes.l),
                                 if (!_showLowStockOnly)
                                   CustomButton(
-                                    text: 'Ajouter un produit',
+                                    text: AppLocalizations.of(context).translate('add_product'),
                                     icon: Icons.add,
                                     onPressed: _showAddProductDialog,
                                     isFullWidth: false,
@@ -399,13 +400,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Produit supprimé avec succès')),
+          SnackBar(content: Text(AppLocalizations.of(context).translate('product_deleted'))),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erreur lors de la suppression du produit')),
+          SnackBar(content: Text(AppLocalizations.of(context).translate('error_deleting_product'))),
         );
       }
     }

@@ -1,7 +1,5 @@
 name: money_tracker
 description: "Une application simple et intuitive pour suivre vos ventes, achats, inventaire et finances mensuelles avec un design nature apaisant."
-# Retirez cette ligne lors de la publication sur le Play Store
-publish_to: 'none'
 version: 1.0.0+1
 
 environment:

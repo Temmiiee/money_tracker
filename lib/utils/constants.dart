@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 // Couleurs de l'application
 class AppColors {
-  // Mode jour - Couleurs principales - thème nature et doux
+  // Mode jour - Couleurs principales - thème forêt ensoleillée
   static const Color lightPrimary = Color(0xFF6B9080);      // Vert sauge/forêt
   static const Color lightSecondary = Color(0xFFA4C3B2);    // Vert menthe clair
   static const Color lightBackground = Color(0xFFF6FFF8);   // Blanc cassé verdatre
@@ -25,88 +25,85 @@ class AppColors {
   static const Color lightTextSecondary = Color(0xFF6D8A96); // Bleu-gris moyen
   static const Color lightTextHint = Color(0xFF9BBCC7);      // Bleu-gris clair
 
-  // Mode nuit - Couleurs principales - thème sombre nature
-  static const Color darkPrimary = Color(0xFF4A6670);       // Bleu-vert foncé
-  static const Color darkSecondary = Color(0xFF5F8A8B);     // Bleu-vert moyen
-  static const Color darkBackground = Color(0xFF1E2A2D);    // Gris très foncé avec teinte bleue
-  static const Color darkSurface = Color(0xFF263238);       // Gris foncé avec teinte bleue
-  static const Color darkError = Color(0xFFCF6679);         // Rose foncé
+  // Mode nuit - Couleurs principales - thème forêt sombre
+  static const Color darkPrimary = Color(0xFF4D8A6A);       // Vert forêt moyen (meilleur contraste)
+  static const Color darkSecondary = Color(0xFF3A5F41);     // Vert forêt foncé
+  static const Color darkBackground = Color(0xFF121A16);    // Noir verdatre très foncé
+  static const Color darkSurface = Color(0xFF1A2520);       // Vert-noir foncé
+  static const Color darkError = Color(0xFFB05A65);         // Rouge foncé avec meilleur contraste
 
   // Mode nuit - Couleurs pour les indicateurs
-  static const Color darkSuccess = Color(0xFF81C784);       // Vert plus vif pour contraste
-  static const Color darkWarning = Color(0xFFFFD54F);       // Jaune plus vif pour contraste
-  static const Color darkDanger = Color(0xFFE57373);        // Rouge plus vif pour contraste
+  static const Color darkSuccess = Color(0xFF4D8A6A);       // Vert forêt moyen (même que primary)
+  static const Color darkWarning = Color(0xFFA88555);       // Ocre foncé (meilleur contraste)
+  static const Color darkDanger = Color(0xFFA55555);        // Rouge foncé (meilleur contraste)
 
   // Mode nuit - Couleurs de fond pour les cartes
-  static const Color darkCardSuccess = Color(0xFF1B3C39);   // Vert très foncé
-  static const Color darkCardWarning = Color(0xFF3E3527);   // Beige très foncé
-  static const Color darkCardDanger = Color(0xFF3E2723);    // Brun très foncé
-  static const Color darkCardPrimary = Color(0xFF263238);   // Bleu-gris foncé
+  static const Color darkCardSuccess = Color(0xFF1A2A1F);   // Vert forêt très foncé
+  static const Color darkCardWarning = Color(0xFF252015);   // Beige très foncé
+  static const Color darkCardDanger = Color(0xFF251A1A);    // Brun très foncé
+  static const Color darkCardPrimary = Color(0xFF1A2520);   // Vert-noir foncé
 
   // Mode nuit - Couleurs de texte
-  static const Color darkTextPrimary = Color(0xFFE0E0E0);    // Blanc cassé
-  static const Color darkTextSecondary = Color(0xFFB0BEC5);  // Gris clair
-  static const Color darkTextHint = Color(0xFF78909C);       // Gris moyen
+  static const Color darkTextPrimary = Color(0xFFE0E0E0);    // Gris très clair (meilleur contraste)
+  static const Color darkTextSecondary = Color(0xFFB0BEC5);  // Gris-bleu clair (meilleur contraste)
+  static const Color darkTextHint = Color(0xFF78909C);       // Gris-bleu moyen (meilleur contraste)
 
-  // Couleurs actuelles - seront définies en fonction du mode
-  static const Color primary = Color(0xFF4A6670);           // Par défaut en mode nuit
-  static const Color secondary = Color(0xFF5F8A8B);
-  static const Color background = Color(0xFF1E2A2D);
-  static const Color surface = Color(0xFF263238);
-  static const Color error = Color(0xFFCF6679);
+  // Couleurs actuelles - par défaut en mode jour
+  static const Color primary = lightPrimary;
+  static const Color secondary = lightSecondary;
+  static const Color background = lightBackground;
+  static const Color surface = lightSurface;
+  static const Color error = lightError;
 
-  static const Color success = Color(0xFF81C784);
-  static const Color warning = Color(0xFFFFD54F);
-  static const Color danger = Color(0xFFE57373);
+  static const Color success = lightSuccess;
+  static const Color warning = lightWarning;
+  static const Color danger = lightDanger;
 
-  static const Color cardSuccess = Color(0xFF1B3C39);
-  static const Color cardWarning = Color(0xFF3E3527);
-  static const Color cardDanger = Color(0xFF3E2723);
-  static const Color cardPrimary = Color(0xFF263238);
+  static const Color cardSuccess = lightCardSuccess;
+  static const Color cardWarning = lightCardWarning;
+  static const Color cardDanger = lightCardDanger;
+  static const Color cardPrimary = lightCardPrimary;
 
-  static const Color textPrimary = Color(0xFFE0E0E0);
-  static const Color textSecondary = Color(0xFFB0BEC5);
-  static const Color textHint = Color(0xFF78909C);
+  static const Color textPrimary = lightTextPrimary;
+  static const Color textSecondary = lightTextSecondary;
+  static const Color textHint = lightTextHint;
 
   // Couleur spécifique pour le portefeuille (différente des ventes)
-  static const Color wallet = Color(0xFF5F8A8B);      // Bleu-vert moyen, différent du vert des ventes
-
-  // Note: Nous utilisons maintenant des couleurs constantes pour éviter les erreurs
-  // avec const dans le code. Le mode nuit est appliqué par défaut.
+  static const Color wallet = lightSecondary;      // Vert menthe clair, différent du vert des ventes
 }
 
-// Textes de l'application
+// Textes de l'application - Clés de traduction
 class AppTexts {
   // Titres des écrans
-  static const String appName = "Money Tracker";
-  static const String homeTitle = "Accueil";
-  static const String sellTitle = "Je vends quelque chose";
-  static const String purchaseTitle = "J'ai acheté quelque chose";
-  static const String walletTitle = "Portefeuille";
-  static const String inventoryTitle = "Mon stock";
-  static const String monthlyTitle = "Mon mois";
+  static const String appName = "app_name";
+  static const String homeTitle = "home_title";
+  static const String sellTitle = "sell_title";
+  static const String purchaseTitle = "purchase_title";
+  static const String walletTitle = "wallet_title";
+  static const String inventoryTitle = "inventory_title";
+  static const String monthlyTitle = "monthly_title";
 
   // Textes de l'écran d'accueil
-  static const String earnedThisMonth = "Argent gagné ce mois";
-  static const String spentThisMonth = "Argent dépensé ce mois";
-  static const String walletBalance = "Solde du portefeuille";
-  static const String remainingMoney = "Ce qu'il reste en poche";
+  static const String earnedThisMonth = "earned_this_month";
+  static const String spentThisMonth = "spent_this_month";
+  static const String walletBalance = "wallet_balance";
+  static const String remainingMoney = "remaining_money";
 
   // Textes des formulaires
-  static const String whatItem = "Quoi ?";
-  static const String price = "Prix";
-  static const String isForStock = "Est-ce pour refaire du stock ?";
-  static const String soldFor = "Prix unitaire";
-  static const String soldMultiple = "J'ai vendu plusieurs";
-  static const String addQuickSale = "Ajouter rapidement une vente";
+  static const String whatItem = "what_item";
+  static const String price = "price";
+  static const String isForStock = "is_for_stock";
+  static const String soldFor = "sold_for";
+  static const String soldMultiple = "sold_multiple";
+  static const String addQuickSale = "add_quick_sale";
 
   // Boutons
-  static const String save = "Enregistrer";
-  static const String cancel = "Annuler";
-  static const String add = "Ajouter";
-  static const String edit = "Modifier";
-  static const String delete = "Supprimer";
-  static const String export = "Exporter en PDF";
+  static const String save = "save";
+  static const String cancel = "cancel";
+  static const String add = "add";
+  static const String edit = "edit";
+  static const String delete = "delete";
+  static const String export = "export";
 }
 
 // Dimensions et espacements

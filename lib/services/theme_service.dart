@@ -9,9 +9,7 @@ class ThemeService {
   // Obtenir le thème actuel
   static Future<ThemeMode> getThemeMode() async {
     final prefs = await SharedPreferences.getInstance();
-    final themeMode = prefs.getString(_themeKey) ?? _darkMode; // Mode nuit par défaut
-
-    // Note: Les couleurs sont maintenant constantes et définies en mode nuit par défaut
+    final themeMode = prefs.getString(_themeKey) ?? _lightMode; // Mode jour par défaut
 
     return themeMode == _darkMode ? ThemeMode.dark : ThemeMode.light;
   }
@@ -29,7 +27,7 @@ class ThemeService {
   // Basculer entre les modes
   static Future<ThemeMode> toggleThemeMode() async {
     final prefs = await SharedPreferences.getInstance();
-    final currentMode = prefs.getString(_themeKey) ?? _darkMode;
+    final currentMode = prefs.getString(_themeKey) ?? _lightMode; // Utiliser le mode par défaut (jour)
     final newMode = currentMode == _darkMode ? _lightMode : _darkMode;
 
     // Note: Les couleurs sont maintenant constantes et définies en mode nuit par défaut

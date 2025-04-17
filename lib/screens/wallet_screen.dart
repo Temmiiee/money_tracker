@@ -7,6 +7,7 @@ import '../widgets/custom_button.dart';
 import '../widgets/transaction_card.dart';
 import '../utils/number_formatter.dart';
 import 'package:uuid/uuid.dart';
+import '../localization/app_localizations.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -167,7 +168,7 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppTexts.walletTitle),
+        title: Text(AppLocalizations.of(context).translate(AppTexts.walletTitle)),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -183,22 +184,22 @@ class _WalletScreenState extends State<WalletScreen> {
                       // Solde du portefeuille et impact sur le solde global
                       Card(
                         elevation: 1,
-                        color: AppColors.cardPrimary,
+                        color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardPrimary : AppColors.lightCardPrimary,
                         child: Padding(
                           padding: const EdgeInsets.all(AppSizes.m),
                           child: Column(
                             children: [
-                              const Row(
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.account_balance_wallet, color: AppColors.primary),
-                                  SizedBox(width: AppSizes.s),
+                                  Icon(Icons.account_balance_wallet, color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary),
+                                  const SizedBox(width: AppSizes.s),
                                   Text(
-                                    'Solde du portefeuille',
+                                    AppLocalizations.of(context).translate('wallet_balance'),
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.primary,
+                                      color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
                                     ),
                                   ),
                                 ],
@@ -208,7 +209,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                 padding: const EdgeInsets.symmetric(horizontal: AppSizes.l, vertical: AppSizes.m),
                                 margin: const EdgeInsets.symmetric(vertical: AppSizes.s, horizontal: AppSizes.m),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
                                   borderRadius: BorderRadius.circular(AppSizes.m),
                                   boxShadow: [
                                     BoxShadow(
@@ -224,8 +225,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                     fontSize: 36,
                                     fontWeight: FontWeight.bold,
                                     color: _walletBalance >= 0
-                                        ? AppColors.success
-                                        : AppColors.danger,
+                                        ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkSuccess : AppColors.lightSuccess)
+                                        : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkDanger : AppColors.lightDanger),
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -233,8 +234,8 @@ class _WalletScreenState extends State<WalletScreen> {
                               const SizedBox(height: AppSizes.m),
                               const Divider(),
                               const SizedBox(height: AppSizes.s),
-                              const Text(
-                                'Détails du calcul',
+                              Text(
+                                AppLocalizations.of(context).translate('calculation_details'),
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -245,16 +246,16 @@ class _WalletScreenState extends State<WalletScreen> {
                               Container(
                                 padding: const EdgeInsets.all(AppSizes.m),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
                                   borderRadius: BorderRadius.circular(AppSizes.s),
-                                  border: Border.all(color: Colors.grey.shade200),
+                                  border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
                                 ),
                                 child: Column(
                                   children: [
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text('Ventes:', style: TextStyle(fontWeight: FontWeight.w500)),
+                                        Text(AppLocalizations.of(context).translate('sales'), style: const TextStyle(fontWeight: FontWeight.w500)),
                                         Container(
                                           padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.xs),
                                           decoration: BoxDecoration(
@@ -263,7 +264,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                           ),
                                           child: Text(
                                             '+${NumberFormatter.formatEuro(_totalSales)}',
-                                            style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.bold),
+                                            style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSuccess : AppColors.lightSuccess, fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                       ],
@@ -274,7 +275,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text('Achats:', style: TextStyle(fontWeight: FontWeight.w500)),
+                                        Text(AppLocalizations.of(context).translate('purchases'), style: const TextStyle(fontWeight: FontWeight.w500)),
                                         Container(
                                           padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.xs),
                                           decoration: BoxDecoration(
@@ -283,7 +284,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                           ),
                                           child: Text(
                                             '-${NumberFormatter.formatEuro(_totalPurchases)}',
-                                            style: const TextStyle(color: AppColors.danger, fontWeight: FontWeight.bold),
+                                            style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkDanger : AppColors.lightDanger, fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                       ],
@@ -294,7 +295,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text('Transactions du portefeuille:', style: TextStyle(fontWeight: FontWeight.w500)),
+                                        Text('${AppLocalizations.of(context).translate('wallet_transactions')}:', style: const TextStyle(fontWeight: FontWeight.w500)),
                                         Container(
                                           padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.xs),
                                           decoration: BoxDecoration(
@@ -303,7 +304,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                           ),
                                           child: Text(
                                             NumberFormatter.formatEuro(NumberFormatter.roundToTwoDecimals(_walletTransactions.fold<double>(0.0, (sum, t) => sum + (t.isDeposit ?? false ? t.amount : -t.amount)))),
-                                            style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                                            style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary, fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                       ],
@@ -324,8 +325,8 @@ class _WalletScreenState extends State<WalletScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Ajouter ou retirer de l\'argent',
+                            Text(
+                              AppLocalizations.of(context).translate('add_remove_money'),
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -339,7 +340,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               children: [
                                 Expanded(
                                   child: RadioListTile<bool>(
-                                    title: const Text('Ajouter'),
+                                    title: Text(AppLocalizations.of(context).translate('add_money')),
                                     value: true,
                                     groupValue: _isDeposit,
                                     onChanged: (value) {
@@ -352,7 +353,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                 ),
                                 Expanded(
                                   child: RadioListTile<bool>(
-                                    title: const Text('Retirer'),
+                                    title: Text(AppLocalizations.of(context).translate('remove_money')),
                                     value: false,
                                     groupValue: _isDeposit,
                                     onChanged: (value) {
@@ -371,9 +372,9 @@ class _WalletScreenState extends State<WalletScreen> {
                             // Description
                             TextFormField(
                               controller: _descriptionController,
-                              decoration: const InputDecoration(
-                                labelText: 'Description',
-                                hintText: 'Ex: Retrait bancaire, Don, etc.',
+                              decoration: InputDecoration(
+                                labelText: AppLocalizations.of(context).translate('description'),
+                                hintText: AppLocalizations.of(context).translate('description_hint'),
                                 border: OutlineInputBorder(),
                                 prefixIcon: Icon(Icons.description),
                               ),
@@ -391,13 +392,13 @@ class _WalletScreenState extends State<WalletScreen> {
                             TextFormField(
                               controller: _amountController,
                               decoration: InputDecoration(
-                                labelText: 'Montant',
+                                labelText: AppLocalizations.of(context).translate('amount'),
                                 border: const OutlineInputBorder(),
                                 prefixIcon: const Icon(Icons.euro),
                                 suffixText: '€',
                                 hintText: _isDeposit
-                                    ? 'Montant à ajouter'
-                                    : 'Montant à retirer',
+                                    ? AppLocalizations.of(context).translate('amount_to_add')
+                                    : AppLocalizations.of(context).translate('amount_to_remove'),
                               ),
                               keyboardType: const TextInputType.numberWithOptions(decimal: true),
                               inputFormatters: [
@@ -418,7 +419,7 @@ class _WalletScreenState extends State<WalletScreen> {
 
                             // Bouton d'enregistrement
                             CustomButton(
-                              text: _isDeposit ? 'Ajouter au portefeuille' : 'Retirer du portefeuille',
+                              text: _isDeposit ? AppLocalizations.of(context).translate('add_to_wallet') : AppLocalizations.of(context).translate('remove_from_wallet'),
                               icon: _isDeposit ? Icons.add : Icons.remove,
                               color: _isDeposit ? AppColors.success : AppColors.danger,
                               onPressed: _saveWalletTransaction,
@@ -430,8 +431,8 @@ class _WalletScreenState extends State<WalletScreen> {
                       const SizedBox(height: AppSizes.l),
 
                       // Historique des transactions
-                      const Text(
-                        'Historique des transactions',
+                      Text(
+                        AppLocalizations.of(context).translate('transaction_history'),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -441,12 +442,12 @@ class _WalletScreenState extends State<WalletScreen> {
                       const SizedBox(height: AppSizes.m),
 
                       _walletTransactions.isEmpty
-                          ? const Center(
+                          ? Center(
                               child: Padding(
-                                padding: EdgeInsets.all(AppSizes.l),
+                                padding: const EdgeInsets.all(AppSizes.l),
                                 child: Text(
-                                  'Aucune transaction',
-                                  style: TextStyle(color: AppColors.textSecondary),
+                                  AppLocalizations.of(context).translate('no_transactions'),
+                                  style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
                                 ),
                               ),
                             )

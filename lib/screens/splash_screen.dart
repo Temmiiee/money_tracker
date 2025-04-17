@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 import '../utils/app_icon.dart';
+import '../localization/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   final Widget nextScreen;
@@ -88,19 +89,19 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     const AppLogo(size: 120, showText: false),
                     const SizedBox(height: 24),
                     Text(
-                      AppTexts.appName,
-                      style: const TextStyle(
+                      AppLocalizations.of(context).translate(AppTexts.appName),
+                      style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
+                        color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
                       ),
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Gérez vos finances simplement',
+                    Text(
+                      AppLocalizations.of(context).translate('app_tagline'),
                       style: TextStyle(
                         fontSize: 16,
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
                       ),
                     ),
                   ],

@@ -2,14 +2,15 @@
 final Map<String, String> french = {
   // Titres des écrans
   'app_name': 'Money Tracker',
+  'app_tagline': 'Gérez vos finances simplement',
   'home_title': 'Accueil',
-  'sell_title': 'Je vends quelque chose',
-  'purchase_title': 'J\'ai acheté quelque chose',
+  'sell_title': 'Ventes',
+  'purchase_title': 'Achats',
   'wallet_title': 'Portefeuille',
   'inventory_title': 'Mon stock',
   'monthly_title': 'Mon mois',
   'settings_title': 'Paramètres',
-  
+
   // Textes de l'écran d'accueil
   'hello': 'Bonjour !',
   'earned_this_month': 'Argent gagné ce mois',
@@ -20,7 +21,7 @@ final Map<String, String> french = {
   'no_recent_transactions': 'Aucune transaction récente',
   'sales': 'Ventes:',
   'purchases': 'Achats:',
-  
+
   // Textes des formulaires
   'what_item': 'Quoi ?',
   'price': 'Prix',
@@ -29,16 +30,40 @@ final Map<String, String> french = {
   'sold_multiple': 'J\'ai vendu plusieurs',
   'add_quick_sale': 'Ajouter rapidement une vente',
   'quantity': 'Quantité',
+  'units': 'unités',
+  'per_unit': 'par unité',
+  'select_product': 'Sélectionnez un produit',
+  'select_product_to_restock': 'Sélectionnez un produit à réapprovisionner',
+  'or_enter_name_manually': 'Ou saisissez le nom manuellement',
+  'enter_name_or_select_product': 'Veuillez entrer un nom ou sélectionner un produit',
+  'enter_quantity': 'Veuillez entrer une quantité',
+  'quantity_must_be_positive': 'La quantité doit être supérieure à 0',
+  'unit_purchase_price': 'Prix d\'achat/u',
+  'total_price': 'Prix total',
+  'price_per_unit': 'Prix par unité',
+  'price_for_group': 'Prix pour tout le groupe',
+  'price_mode_changed': 'Mode de prix changé en',
+  'unit_price': 'Prix unité',
+  'enter_amount': 'Veuillez entrer un montant',
+  'enter_valid_amount': 'Veuillez entrer un montant valide',
+  'calculation': 'Calcul',
+  'total_amount': 'Montant total',
+  'calculated_unit_price': 'Prix unitaire calculé',
+  'product_category': 'Catégorie de produit',
+  'clear': 'Effacer',
+  'total_amount_calculated_automatically': 'Montant total calculé automatiquement',
+  'insufficient_stock': 'Quantité insuffisante en stock',
+  'sale_details': 'Détails de la vente',
+  'purchase_details': 'Détails de l\'achat',
+  'for_stock': 'Pour le stock',
+  'multiple_sale': 'Vente multiple',
   'category': 'Catégorie',
   'select_category': 'Sélectionner une catégorie',
-  'select_product': 'Sélectionner un produit',
   'or_enter_manually': 'ou saisir manuellement',
-  'price_per_unit': 'Prix par unité',
-  'total_price': 'Prix total',
   'description': 'Description',
   'notes': 'Notes (optionnel)',
   'date': 'Date',
-  
+
   // Boutons
   'save': 'Enregistrer',
   'cancel': 'Annuler',
@@ -50,26 +75,36 @@ final Map<String, String> french = {
   'import_csv': 'Importer CSV',
   'reset_data': 'Réinitialiser les données',
   'confirm': 'Confirmer',
-  
+
   // Catégories
   'food': 'Nourriture',
   'art': 'Art',
   'merchandise': 'Marchandise',
   'supplies': 'Fournitures',
   'other': 'Autre',
-  
+
   // Types de transactions
   'sale': 'Vente',
   'purchase': 'Achat',
   'wallet': 'Portefeuille',
-  
+
   // Portefeuille
   'add_money': 'Ajouter de l\'argent',
   'remove_money': 'Retirer de l\'argent',
   'deposit': 'Dépôt',
   'withdrawal': 'Retrait',
   'amount': 'Montant',
-  
+  'amount_to_add': 'Montant à ajouter',
+  'amount_to_remove': 'Montant à retirer',
+  'add_to_wallet': 'Ajouter au portefeuille',
+  'remove_from_wallet': 'Retirer du portefeuille',
+  'add_remove_money': 'Ajouter ou retirer de l\'argent',
+  'wallet_transactions': 'Transactions du portefeuille',
+  'transaction_history': 'Historique des transactions',
+  'no_transactions': 'Aucune transaction',
+  'calculation_details': 'Détails du calcul',
+  'description_hint': 'Ex: Retrait bancaire, Don, etc.',
+
   // Inventaire
   'inventory_stats': 'Statistiques du stock',
   'total_products': 'Produits total',
@@ -77,19 +112,45 @@ final Map<String, String> french = {
   'add_product': 'Ajouter un produit',
   'edit_product': 'Modifier le produit',
   'product_name': 'Nom du produit',
-  'unit_price': 'Prix unitaire',
+  'product_unit_price': 'Prix unitaire',
   'stock_quantity': 'Quantité en stock',
   'no_products': 'Aucun produit en stock',
-  
+  'no_products_to_restock': 'Aucun produit à réapprovisionner',
+  'to_restock': 'À réapprovisionner',
+  'show_low_stock_only': 'Afficher uniquement les stocks bas',
+  'selling_price_per_unit': 'Prix de vente/u',
+  'please_enter_name': 'Veuillez entrer un nom',
+  'please_enter_price': 'Veuillez entrer un prix',
+  'please_enter_valid_price': 'Veuillez entrer un prix valide',
+  'error_loading_products': 'Erreur lors du chargement des produits',
+  'error_deleting_product': 'Erreur lors de la suppression du produit',
+
   // Paramètres
   'language': 'Langue',
+  'language_setting': 'Langue de l\'application',
+  'choose_language': 'Choisir la langue',
   'french': 'Français',
   'english': 'Anglais',
+  'to_french': 'en français',
+  'to_english': 'en anglais',
+  'language_changed': 'Langue changée',
+  'theme_changed': 'Thème changé en',
+  'dark_mode': 'mode nuit',
+  'dark_mode_setting': 'Mode nuit',
+  'light_mode': 'mode jour',
+  'enabled': 'Activé',
+  'disabled': 'Désactivé',
+  'appearance': 'Apparence',
   'data_management': 'Gestion des données',
   'about': 'À propos',
   'version': 'Version',
+  'loading': 'Chargement...',
+  'export_csv_desc': 'Exporter toutes vos données au format CSV',
+  'export_pdf_desc': 'Exporter un rapport au format PDF',
+  'import_csv_desc': 'Importer des données depuis un fichier CSV',
+  'reset_data_desc': 'Supprimer toutes les données de l\'application',
   'reset_confirmation': 'Êtes-vous sûr de vouloir réinitialiser toutes les données ? Cette action est irréversible.',
-  
+
   // Messages
   'data_saved': 'Données enregistrées avec succès',
   'error_saving': 'Erreur lors de l\'enregistrement',
@@ -105,7 +166,27 @@ final Map<String, String> french = {
   'data_imported': 'Données importées avec succès',
   'data_reset': 'Données réinitialisées avec succès',
   'error_occurred': 'Une erreur est survenue',
-  
+  'error_loading_data': 'Erreur lors du chargement des données',
+  'error_deleting_transaction': 'Erreur lors de la suppression de la transaction',
+  'change_month': 'Changer de mois',
+  'monthly_transactions': 'Transactions du mois',
+  'no_transactions_for_month': 'Aucune transaction pour ce mois',
+  'pdf_export_coming_soon': 'Export PDF à venir dans une prochaine version',
+  'financial_distribution': 'Répartition des finances',
+  'exporting_data': 'Exportation des données en cours...',
+  'csv_downloaded': 'Fichier CSV téléchargé avec succès',
+  'error_exporting': 'Erreur lors de l\'exportation',
+  'generating_pdf': 'Génération du PDF en cours...',
+  'pdf_downloaded': 'Rapport PDF téléchargé avec succès',
+  'pdf_generated': 'PDF généré avec succès dans',
+  'error_generating_pdf': 'Erreur lors de la génération du PDF',
+  'importing_data': 'Importation des données en cours...',
+  'cannot_read_file': 'Impossible de lire le fichier',
+  'error_importing': 'Erreur lors de l\'importation',
+  'reset': 'Réinitialiser',
+  'resetting_data': 'Réinitialisation des données en cours...',
+  'error_resetting': 'Erreur lors de la réinitialisation',
+
   // Mois
   'january': 'Janvier',
   'february': 'Février',

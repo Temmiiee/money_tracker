@@ -95,30 +95,30 @@ class _MainAppState extends State<MainApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      // Thème clair
+      // Thème clair - forêt ensoleillée
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.primary,
-          primary: AppColors.primary,
-          secondary: AppColors.secondary,
-          surface: AppColors.surface,
+          seedColor: AppColors.lightPrimary,
+          primary: AppColors.lightPrimary,
+          secondary: AppColors.lightSecondary,
+          surface: AppColors.lightSurface,
           // background est déprécié, utiliser surface à la place
-          // background: AppColors.background,
-          error: AppColors.error,
+          // background: AppColors.lightBackground,
+          error: AppColors.lightError,
           onPrimary: Colors.white,
-          onSecondary: AppColors.textPrimary,
-          onSurface: AppColors.textPrimary,
+          onSecondary: AppColors.lightTextPrimary,
+          onSurface: AppColors.lightTextPrimary,
           // onBackground est déprécié, utiliser onSurface à la place
-          // onBackground: AppColors.textPrimary,
+          // onBackground: AppColors.lightTextPrimary,
           onError: Colors.white,
           brightness: Brightness.light,
         ),
-        scaffoldBackgroundColor: AppColors.background,
+        scaffoldBackgroundColor: AppColors.lightBackground,
         // fontFamily: 'Poppins', // Commenté temporairement
 
         // AppBar plus douce
         appBarTheme: AppBarTheme(
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.lightPrimary,
           foregroundColor: Colors.white,
           centerTitle: true,
           elevation: 0,
@@ -164,7 +164,7 @@ class _MainAppState extends State<MainApp> {
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSizes.s),
-            borderSide: BorderSide(color: AppColors.error.withAlpha(204), width: 1),
+            borderSide: BorderSide(color: AppColors.lightError.withAlpha(204), width: 1),
           ),
         ),
 
@@ -172,7 +172,7 @@ class _MainAppState extends State<MainApp> {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
-            backgroundColor: AppColors.primary,
+            backgroundColor: AppColors.lightPrimary,
             elevation: 1, // Élévation réduite
             shadowColor: Colors.black.withAlpha(25), // Ombre plus douce
             shape: RoundedRectangleBorder(
@@ -193,7 +193,7 @@ class _MainAppState extends State<MainApp> {
         // Boutons texte plus doux
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            foregroundColor: AppColors.primary,
+            foregroundColor: AppColors.lightPrimary,
             padding: const EdgeInsets.symmetric(
               vertical: AppSizes.s,
               horizontal: AppSizes.m,
@@ -207,14 +207,14 @@ class _MainAppState extends State<MainApp> {
 
         // Thème de texte amélioré
         textTheme: TextTheme(
-          displayLarge: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
-          displayMedium: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
-          displaySmall: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
-          headlineMedium: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600),
-          headlineSmall: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600),
-          titleLarge: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600),
-          bodyLarge: TextStyle(color: AppColors.textPrimary),
-          bodyMedium: TextStyle(color: AppColors.textPrimary),
+          displayLarge: TextStyle(color: AppColors.lightTextPrimary, fontWeight: FontWeight.bold),
+          displayMedium: TextStyle(color: AppColors.lightTextPrimary, fontWeight: FontWeight.bold),
+          displaySmall: TextStyle(color: AppColors.lightTextPrimary, fontWeight: FontWeight.bold),
+          headlineMedium: TextStyle(color: AppColors.lightTextPrimary, fontWeight: FontWeight.w600),
+          headlineSmall: TextStyle(color: AppColors.lightTextPrimary, fontWeight: FontWeight.w600),
+          titleLarge: TextStyle(color: AppColors.lightTextPrimary, fontWeight: FontWeight.w600),
+          bodyLarge: TextStyle(color: AppColors.lightTextPrimary),
+          bodyMedium: TextStyle(color: AppColors.lightTextPrimary),
         ),
 
         // Divider plus doux
@@ -231,7 +231,7 @@ class _MainAppState extends State<MainApp> {
               if (states.contains(WidgetState.disabled)) {
                 return Colors.grey.shade300;
               }
-              return AppColors.primary;
+              return AppColors.lightPrimary;
             },
           ),
           shape: RoundedRectangleBorder(
@@ -246,7 +246,7 @@ class _MainAppState extends State<MainApp> {
               if (states.contains(WidgetState.disabled)) {
                 return Colors.grey.shade300;
               }
-              return AppColors.primary;
+              return AppColors.lightPrimary;
             },
           ),
         ),
@@ -259,7 +259,7 @@ class _MainAppState extends State<MainApp> {
                 return Colors.grey.shade300;
               }
               if (states.contains(WidgetState.selected)) {
-                return AppColors.primary;
+                return AppColors.lightPrimary;
               }
               return Colors.grey.shade400;
             },
@@ -270,35 +270,51 @@ class _MainAppState extends State<MainApp> {
                 return Colors.grey.shade200;
               }
               if (states.contains(WidgetState.selected)) {
-                return AppColors.primary.withAlpha(76);
+                return AppColors.lightPrimary.withAlpha(76);
               }
               return Colors.grey.shade300;
             },
           ),
         ),
 
+        dialogTheme: DialogTheme(
+          backgroundColor: AppColors.lightSurface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+            side: BorderSide(color: Colors.grey.shade200),
+          ),
+          titleTextStyle: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.lightTextPrimary,
+          ),
+          contentTextStyle: TextStyle(
+            fontSize: 16,
+            color: AppColors.lightTextPrimary,
+          ),
+        ),
         useMaterial3: true,
       ),
-      // Thème sombre
+      // Thème sombre - forêt sombre
       darkTheme: ThemeData(
         colorScheme: ColorScheme.dark(
-          primary: AppColors.primary,
-          secondary: AppColors.secondary,
-          surface: AppColors.surface,
+          primary: AppColors.darkPrimary,
+          secondary: AppColors.darkSecondary,
+          surface: AppColors.darkSurface,
           // background est déprécié, utiliser surface à la place
-          // background: AppColors.background,
-          error: AppColors.error,
+          // background: AppColors.darkBackground,
+          error: AppColors.darkError,
           onPrimary: Colors.white,
           onSecondary: Colors.white,
-          onSurface: AppColors.textPrimary,
+          onSurface: AppColors.darkTextPrimary,
           // onBackground est déprécié, utiliser onSurface à la place
-          // onBackground: AppColors.textPrimary,
+          // onBackground: AppColors.darkTextPrimary,
           onError: Colors.white,
           brightness: Brightness.dark,
         ),
-        scaffoldBackgroundColor: AppColors.background,
+        scaffoldBackgroundColor: AppColors.darkBackground,
         appBarTheme: AppBarTheme(
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.darkPrimary,
           foregroundColor: Colors.white,
           centerTitle: true,
           elevation: 0,
@@ -310,42 +326,42 @@ class _MainAppState extends State<MainApp> {
         cardTheme: CardTheme(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-            side: BorderSide(color: Colors.grey.shade800),
+            side: BorderSide(color: Colors.grey.shade700),
           ),
           elevation: 0.5,
-          color: AppColors.surface,
+          color: AppColors.darkSurface,
           shadowColor: Colors.black.withAlpha(50),
           margin: const EdgeInsets.symmetric(vertical: AppSizes.xs),
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: AppColors.surface,
+          fillColor: AppColors.darkSurface,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: AppSizes.m,
             vertical: AppSizes.m,
           ),
-          floatingLabelStyle: TextStyle(color: AppColors.primary),
+          floatingLabelStyle: TextStyle(color: AppColors.darkPrimary),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSizes.s),
-            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+            borderSide: BorderSide(color: AppColors.darkPrimary, width: 1.5),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSizes.s),
-            borderSide: BorderSide(color: AppColors.error.withAlpha(204), width: 1),
+            borderSide: BorderSide(color: AppColors.darkError.withAlpha(204), width: 1),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSizes.s),
-            borderSide: BorderSide(color: Colors.grey.shade700),
+            borderSide: BorderSide(color: Colors.grey.shade600),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSizes.s),
-            borderSide: BorderSide(color: Colors.grey.shade700),
+            borderSide: BorderSide(color: Colors.grey.shade600),
           ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
-            backgroundColor: AppColors.primary,
+            backgroundColor: AppColors.darkPrimary,
             elevation: 1,
             shadowColor: Colors.black.withAlpha(50),
             shape: RoundedRectangleBorder(
@@ -372,7 +388,7 @@ class _MainAppState extends State<MainApp> {
               if (states.contains(WidgetState.disabled)) {
                 return Colors.grey.shade700;
               }
-              return AppColors.primary;
+              return AppColors.darkPrimary;
             },
           ),
           shape: RoundedRectangleBorder(
@@ -385,7 +401,7 @@ class _MainAppState extends State<MainApp> {
               if (states.contains(WidgetState.disabled)) {
                 return Colors.grey.shade700;
               }
-              return AppColors.primary;
+              return AppColors.darkPrimary;
             },
           ),
         ),
@@ -396,7 +412,7 @@ class _MainAppState extends State<MainApp> {
                 return Colors.grey.shade700;
               }
               if (states.contains(WidgetState.selected)) {
-                return AppColors.primary;
+                return AppColors.darkPrimary;
               }
               return Colors.grey.shade400;
             },
@@ -404,13 +420,29 @@ class _MainAppState extends State<MainApp> {
           trackColor: WidgetStateProperty.resolveWith<Color>(
             (Set<WidgetState> states) {
               if (states.contains(WidgetState.disabled)) {
-                return Colors.grey.shade800;
+                return Colors.grey.shade700;
               }
               if (states.contains(WidgetState.selected)) {
-                return AppColors.primary.withAlpha(76);
+                return AppColors.darkPrimary.withAlpha(76);
               }
               return Colors.grey.shade700;
             },
+          ),
+        ),
+        dialogTheme: DialogTheme(
+          backgroundColor: AppColors.darkSurface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+            side: BorderSide(color: Colors.grey.shade700),
+          ),
+          titleTextStyle: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.darkTextPrimary,
+          ),
+          contentTextStyle: TextStyle(
+            fontSize: 16,
+            color: AppColors.darkTextPrimary,
           ),
         ),
         useMaterial3: true,
@@ -466,47 +498,47 @@ class _MainScreenState extends State<MainScreen> {
               offset: const Offset(0, -1),
             ),
           ],
-          color: Colors.white,
+          color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
         ),
         child: BottomNavigationBar(
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: AppTexts.homeTitle,
+              icon: const Icon(Icons.home_outlined),
+              activeIcon: const Icon(Icons.home),
+              label: AppLocalizations.of(context).translate(AppTexts.homeTitle),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.sell_outlined),
-              activeIcon: Icon(Icons.sell),
-              label: 'Je vends',
+              icon: const Icon(Icons.sell_outlined),
+              activeIcon: const Icon(Icons.sell),
+              label: AppLocalizations.of(context).translate(AppTexts.sellTitle),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart_outlined),
-              activeIcon: Icon(Icons.shopping_cart),
-              label: 'J\'achète',
+              icon: const Icon(Icons.shopping_cart_outlined),
+              activeIcon: const Icon(Icons.shopping_cart),
+              label: AppLocalizations.of(context).translate(AppTexts.purchaseTitle),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance_wallet_outlined),
-              activeIcon: Icon(Icons.account_balance_wallet),
-              label: 'Portefeuille',
+              icon: const Icon(Icons.account_balance_wallet_outlined),
+              activeIcon: const Icon(Icons.account_balance_wallet),
+              label: AppLocalizations.of(context).translate(AppTexts.walletTitle),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.inventory_2_outlined),
-              activeIcon: Icon(Icons.inventory_2),
-              label: 'Stock',
+              icon: const Icon(Icons.inventory_2_outlined),
+              activeIcon: const Icon(Icons.inventory_2),
+              label: AppLocalizations.of(context).translate(AppTexts.inventoryTitle),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month_outlined),
-              activeIcon: Icon(Icons.calendar_month),
-              label: 'Mon mois',
+              icon: const Icon(Icons.calendar_month_outlined),
+              activeIcon: const Icon(Icons.calendar_month),
+              label: AppLocalizations.of(context).translate(AppTexts.monthlyTitle),
             ),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: AppColors.primary,
-          unselectedItemColor: AppColors.textSecondary,
+          selectedItemColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
+          unselectedItemColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
           showUnselectedLabels: true,
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
           elevation: 0,
           selectedFontSize: 12,
           unselectedFontSize: 11,

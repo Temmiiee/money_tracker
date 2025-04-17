@@ -182,14 +182,14 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
         Container(
           margin: const EdgeInsets.only(bottom: AppSizes.m),
           decoration: BoxDecoration(
-            color: Colors.grey.shade100,
+            color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.grey.shade100,
             borderRadius: BorderRadius.circular(AppSizes.s),
           ),
           child: TabBar(
             controller: _tabController,
-            labelColor: AppColors.primary,
-            unselectedLabelColor: AppColors.textSecondary,
-            indicatorColor: AppColors.primary,
+            labelColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
+            unselectedLabelColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+            indicatorColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
             indicatorSize: TabBarIndicatorSize.label,
             labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             unselectedLabelStyle: const TextStyle(fontSize: 12),
@@ -403,14 +403,14 @@ class _ExpensePieChartState extends State<ExpensePieChart> with TickerProviderSt
             Container(
               margin: const EdgeInsets.only(bottom: AppSizes.m),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(AppSizes.s),
               ),
               child: TabBar(
                 controller: _tabController,
-                labelColor: AppColors.primary,
-                unselectedLabelColor: AppColors.textSecondary,
-                indicatorColor: AppColors.primary,
+                labelColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                unselectedLabelColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                indicatorColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
                 indicatorSize: TabBarIndicatorSize.label,
                 labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                 unselectedLabelStyle: const TextStyle(fontSize: 12),
@@ -500,7 +500,7 @@ class _Badge extends StatelessWidget {
     return AnimatedContainer(
       duration: PieChart.defaultDuration,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: color, width: 2),
         boxShadow: [

@@ -8,6 +8,7 @@ import '../services/storage_service.dart';
 import '../widgets/custom_button.dart';
 import '../utils/number_formatter.dart';
 import 'package:uuid/uuid.dart';
+import '../localization/app_localizations.dart';
 
 class PurchaseScreen extends StatefulWidget {
   const PurchaseScreen({super.key});
@@ -215,7 +216,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppTexts.purchaseTitle),
+        title: Text(AppLocalizations.of(context).translate(AppTexts.purchaseTitle)),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -243,16 +244,16 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                               children: [
                                 const Icon(Icons.shopping_cart_outlined, color: AppColors.primary),
                                 const SizedBox(width: AppSizes.s),
-                                const Text(
-                                  'Détails de l\'achat',
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
+                                Text(
+                                  AppLocalizations.of(context).translate('purchase_details'),
+                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
                                 ),
                                 const Spacer(),
                                 // Option pour le stock
                                 Row(
                                   children: [
                                     Text(
-                                      'Pour le stock',
+                                      AppLocalizations.of(context).translate('for_stock'),
                                       style: TextStyle(
                                         color: _isForStock ? AppColors.primary : AppColors.textSecondary,
                                         fontWeight: _isForStock ? FontWeight.bold : FontWeight.normal,
@@ -282,14 +283,14 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                             if (!_isForStock) ...[
                       TextFormField(
                         controller: _nameController,
-                        decoration: const InputDecoration(
-                          labelText: AppTexts.whatItem,
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.shopping_cart_outlined),
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).translate(AppTexts.whatItem),
+                          border: const OutlineInputBorder(),
+                          prefixIcon: const Icon(Icons.shopping_cart_outlined),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Veuillez entrer un nom';
+                            return AppLocalizations.of(context).translate('please_enter_name');
                           }
                           return null;
                         },
@@ -302,13 +303,13 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                             if (_isForStock) ...[
                               // Sélection d'un produit existant
                               DropdownButtonFormField<Product>(
-                                decoration: const InputDecoration(
-                                  labelText: 'Sélectionnez un produit',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.inventory_2_outlined),
+                                decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context).translate('select_product'),
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.inventory_2_outlined),
                                 ),
                                 value: _selectedProduct,
-                                hint: const Text('Sélectionnez un produit à réapprovisionner'),
+                                hint: Text(AppLocalizations.of(context).translate('select_product_to_restock')),
                                 items: _products.map((product) {
                                   return DropdownMenuItem<Product>(
                                     value: product,
@@ -338,15 +339,15 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                               // Champ pour saisir manuellement si pas dans la liste
                               TextFormField(
                                 controller: _nameController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Ou saisissez le nom manuellement',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.edit),
+                                decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context).translate('or_enter_name_manually'),
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.edit),
                                 ),
                                 validator: (value) {
                                   // Accepter un nom vide si un produit est sélectionné
                                   if ((value == null || value.isEmpty) && _selectedProduct == null) {
-                                    return 'Veuillez entrer un nom ou sélectionner un produit';
+                                    return AppLocalizations.of(context).translate('enter_name_or_select_product');
                                   }
                                   return null;
                                 },
@@ -354,71 +355,15 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
 
                               const SizedBox(height: AppSizes.m),
 
-                              // Option pour choisir le mode de prix (unitaire ou total)
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade50,
-                                  borderRadius: BorderRadius.circular(AppSizes.s),
-                                ),
-                                margin: const EdgeInsets.only(bottom: AppSizes.m),
-                                padding: const EdgeInsets.all(AppSizes.s),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: AppSizes.s, top: AppSizes.s),
-                                      child: Text(
-                                        'Mode de prix:',
-                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: RadioListTile<bool>(
-                                            title: const Text('Prix unitaire'),
-                                            subtitle: const Text('Prix par article'),
-                                            value: true,
-                                            groupValue: _isPricePerUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _isPricePerUnit = value!;
-                                                _updateTotalAmount();
-                                              });
-                                            },
-                                            dense: true,
-                                            activeColor: AppColors.primary,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: RadioListTile<bool>(
-                                            title: const Text('Prix total'),
-                                            subtitle: const Text('Prix du groupe'),
-                                            value: false,
-                                            groupValue: _isPricePerUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _isPricePerUnit = value!;
-                                                _updateTotalAmount();
-                                              });
-                                            },
-                                            dense: true,
-                                            activeColor: AppColors.primary,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
+
 
                               // Champ pour la quantité
                               TextFormField(
                                 controller: _quantityController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Quantité',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.numbers),
+                                decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context).translate('quantity'),
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.numbers),
                                 ),
                                 keyboardType: TextInputType.number,
                                 inputFormatters: [
@@ -427,11 +372,11 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                 validator: (value) {
                                   if (_isForStock) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Veuillez entrer une quantité';
+                                      return AppLocalizations.of(context).translate('enter_quantity');
                                     }
                                     final quantity = int.tryParse(value);
                                     if (quantity == null || quantity <= 0) {
-                                      return 'La quantité doit être supérieure à 0';
+                                      return AppLocalizations.of(context).translate('quantity_must_be_positive');
                                     }
                                   }
                                   return null;
@@ -446,14 +391,59 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                               controller: _amountController,
                               decoration: InputDecoration(
                                 labelText: _isForStock
-                                  ? (_isPricePerUnit ? 'Prix d\'achat/u' : 'Prix total')
-                                  : AppTexts.price,
+                                  ? (_isPricePerUnit ? AppLocalizations.of(context).translate('unit_purchase_price') : AppLocalizations.of(context).translate('total_price'))
+                                  : AppLocalizations.of(context).translate('price'),
                                 border: const OutlineInputBorder(),
                                 prefixIcon: const Icon(Icons.euro),
                                 suffixText: '€',
                                 helperText: _isForStock
-                                  ? (_isPricePerUnit ? 'Prix par unité' : 'Prix pour tout le groupe')
+                                  ? (_isPricePerUnit ? AppLocalizations.of(context).translate('price_per_unit') : AppLocalizations.of(context).translate('price_for_group'))
                                   : null,
+                                // Simple bouton de basculement pour le mode de prix
+                                suffixIcon: _isForStock ? InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _isPricePerUnit = !_isPricePerUnit;
+                                      _updateTotalAmount();
+                                    });
+                                    // Afficher un feedback visuel temporaire
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('${AppLocalizations.of(context).translate('price_mode_changed')}: ${_isPricePerUnit ? AppLocalizations.of(context).translate('unit_price') : AppLocalizations.of(context).translate('total_price')}'),
+                                        duration: const Duration(seconds: 1),
+                                        behavior: SnackBarBehavior.floating,
+                                        margin: const EdgeInsets.all(8),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          _isPricePerUnit ? AppLocalizations.of(context).translate('unit_price') : AppLocalizations.of(context).translate('total_price'),
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(context).brightness == Brightness.dark
+                                              ? AppColors.darkPrimary
+                                              : AppColors.lightPrimary,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Icon(
+                                          _isPricePerUnit ? Icons.euro_symbol : Icons.money,
+                                          color: Theme.of(context).brightness == Brightness.dark
+                                            ? AppColors.darkPrimary
+                                            : AppColors.lightPrimary,
+                                          size: 16,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ) : null,
                               ),
                               keyboardType: const TextInputType.numberWithOptions(decimal: true),
                               inputFormatters: [
@@ -461,10 +451,10 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                               ],
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Veuillez entrer un montant';
+                                  return AppLocalizations.of(context).translate('enter_amount');
                                 }
                                 if (double.tryParse(value) == null) {
-                                  return 'Veuillez entrer un montant valide';
+                                  return AppLocalizations.of(context).translate('enter_valid_amount');
                                 }
                                 return null;
                               },
@@ -478,9 +468,9 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                               Container(
                                 padding: const EdgeInsets.all(AppSizes.m),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade50,
+                                  color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.grey.shade50,
                                   borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-                                  border: Border.all(color: Colors.grey.shade200),
+                                  border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
                                 ),
                                 child: Column(
                                   children: [
@@ -488,12 +478,12 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                 // Explication du calcul si prix unitaire
                                 Row(
                                   children: [
-                                    const Icon(Icons.info_outline, color: AppColors.primary, size: 16),
+                                    Icon(Icons.info_outline, color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary, size: 16),
                                     const SizedBox(width: AppSizes.xs),
                                     Expanded(
                                       child: Text(
-                                        'Calcul: ${NumberFormatter.formatCurrency(double.tryParse(_amountController.text) ?? 0.0)} € × ${int.tryParse(_quantityController.text) ?? '0'} unités',
-                                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                                        '${AppLocalizations.of(context).translate('calculation')}: ${NumberFormatter.formatCurrency(double.tryParse(_amountController.text) ?? 0.0)} € × ${int.tryParse(_quantityController.text) ?? '0'} ${AppLocalizations.of(context).translate('units')}',
+                                        style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary, fontSize: 12),
                                       ),
                                     ),
                                   ],
@@ -503,14 +493,17 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    'Montant total:',
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  Text(
+                                    '${AppLocalizations.of(context).translate('total_amount')}:',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                                    ),
                                   ),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.xs),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
                                       borderRadius: BorderRadius.circular(AppSizes.s),
                                       boxShadow: [
                                         BoxShadow(
@@ -522,10 +515,10 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                     ),
                                     child: Text(
                                       NumberFormatter.formatEuro(_calculatedTotal),
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
-                                        color: AppColors.primary,
+                                        color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
                                       ),
                                     ),
                                   ),
@@ -536,12 +529,12 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                 // Explication du calcul si prix total
                                 Row(
                                   children: [
-                                    const Icon(Icons.info_outline, color: AppColors.primary, size: 16),
+                                    Icon(Icons.info_outline, color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary, size: 16),
                                     const SizedBox(width: AppSizes.xs),
                                     Expanded(
                                       child: Text(
-                                        'Prix unitaire calculé: ${(int.tryParse(_quantityController.text) ?? 0) > 0 ? NumberFormatter.formatCurrency(NumberFormatter.roundToTwoDecimals((double.tryParse(_amountController.text) ?? 0.0) / (int.tryParse(_quantityController.text) ?? 1))) : '0,00'} € par unité',
-                                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                                        '${AppLocalizations.of(context).translate('calculated_unit_price')}: ${(int.tryParse(_quantityController.text) ?? 0) > 0 ? NumberFormatter.formatCurrency(NumberFormatter.roundToTwoDecimals((double.tryParse(_amountController.text) ?? 0.0) / (int.tryParse(_quantityController.text) ?? 1))) : '0,00'} € ${AppLocalizations.of(context).translate('per_unit')}',
+                                        style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary, fontSize: 12),
                                       ),
                                     ),
                                   ],
@@ -561,7 +554,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                     // Sélection de catégorie
                     Card(
                       elevation: 0,
-                      color: AppColors.cardPrimary.withAlpha(128),
+                      color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardPrimary.withAlpha(128) : AppColors.lightCardPrimary.withAlpha(128),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppSizes.cardRadius),
                       ),
@@ -574,9 +567,9 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                               children: [
                                 const Icon(Icons.category, size: 20, color: AppColors.primary),
                                 const SizedBox(width: AppSizes.s),
-                                const Text(
-                                  'Catégorie de produit',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                Text(
+                                  AppLocalizations.of(context).translate('product_category'),
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
                                 const Spacer(),
                                 if (_selectedCategoryId != null)
@@ -587,7 +580,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                       });
                                     },
                                     icon: const Icon(Icons.clear, size: 16),
-                                    label: const Text('Effacer'),
+                                    label: Text(AppLocalizations.of(context).translate('clear')),
                                     style: TextButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: AppSizes.s,
@@ -602,7 +595,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                             const SizedBox(height: AppSizes.s),
                             Container(
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
                                 borderRadius: BorderRadius.circular(AppSizes.s),
                                 boxShadow: [
                                   BoxShadow(
@@ -632,7 +625,9 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                         vertical: AppSizes.xs,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: isSelected ? AppColors.primary : Colors.white,
+                                        color: isSelected
+                                          ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary)
+                                          : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white),
                                         borderRadius: BorderRadius.circular(AppSizes.s),
                                         border: Border.all(
                                           color: isSelected ? AppColors.primary : Colors.grey.shade300,
@@ -645,13 +640,17 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                           Icon(
                                             _getCategoryIcon(category.icon),
                                             size: 18,
-                                            color: isSelected ? Colors.white : AppColors.primary,
+                                            color: isSelected
+                                              ? Colors.white
+                                              : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary),
                                           ),
                                           const SizedBox(width: AppSizes.xs),
                                           Text(
                                             category.name,
                                             style: TextStyle(
-                                              color: isSelected ? Colors.white : AppColors.textPrimary,
+                                              color: isSelected
+                                                ? Colors.white
+                                                : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
                                               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                                               fontSize: 13,
                                             ),
@@ -672,7 +671,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
 
                     // Bouton d'enregistrement
                     CustomButton(
-                      text: AppTexts.save,
+                      text: AppLocalizations.of(context).translate(AppTexts.save),
                       icon: Icons.save,
                       onPressed: _savePurchase,
                     ),

@@ -39,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Paramètres'),
+        title: Text(AppLocalizations.of(context).translate('settings_title')),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
@@ -47,41 +47,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.all(AppSizes.m),
         children: [
           // Section Apparence
-          _buildSectionHeader('Apparence'),
+          _buildSectionHeader(AppLocalizations.of(context).translate('appearance')),
           _buildLanguageCard(),
           _buildThemeCard(),
 
           const SizedBox(height: AppSizes.l),
 
           // Section Données
-          _buildSectionHeader('Gestion des données'),
+          _buildSectionHeader(AppLocalizations.of(context).translate('data_management')),
           _buildSettingCard(
-            title: 'Exporter les données (CSV)',
-            subtitle: 'Exporter toutes vos données au format CSV',
+            title: AppLocalizations.of(context).translate('export_csv'),
+            subtitle: AppLocalizations.of(context).translate('export_csv_desc'),
             icon: Icons.file_download,
             onTap: () {
               _exportDataToCSV();
             },
           ),
           _buildSettingCard(
-            title: 'Exporter les données (PDF)',
-            subtitle: 'Exporter un rapport au format PDF',
+            title: AppLocalizations.of(context).translate('export'),
+            subtitle: AppLocalizations.of(context).translate('export_pdf_desc'),
             icon: Icons.picture_as_pdf,
             onTap: () {
               _exportDataToPDF();
             },
           ),
           _buildSettingCard(
-            title: 'Importer des données',
-            subtitle: 'Importer des données depuis un fichier CSV',
+            title: AppLocalizations.of(context).translate('import_csv'),
+            subtitle: AppLocalizations.of(context).translate('import_csv_desc'),
             icon: Icons.file_upload,
             onTap: () {
               _importDataFromCSV();
             },
           ),
           _buildSettingCard(
-            title: 'Réinitialiser les données',
-            subtitle: 'Supprimer toutes les données de l\'application',
+            title: AppLocalizations.of(context).translate('reset_data'),
+            subtitle: AppLocalizations.of(context).translate('reset_data_desc'),
             icon: Icons.delete_forever,
             iconColor: AppColors.danger,
             onTap: () {
@@ -92,9 +92,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: AppSizes.l),
 
           // Section À propos
-          _buildSectionHeader('À propos'),
+          _buildSectionHeader(AppLocalizations.of(context).translate('about')),
           _buildSettingCard(
-            title: 'Version de l\'application',
+            title: AppLocalizations.of(context).translate('version'),
             subtitle: _appVersion,
             icon: Icons.info,
             onTap: () {},
@@ -111,23 +111,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
       margin: const EdgeInsets.only(bottom: AppSizes.s),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
       ),
       child: FutureBuilder<Locale>(
         future: AppLocalizations.getLocale(),
         builder: (context, snapshot) {
-          String languageText = 'Chargement...';
+          String languageText = AppLocalizations.of(context).translate('loading');
           if (snapshot.hasData) {
-            languageText = snapshot.data!.languageCode == 'fr' ? 'Français' : 'English';
+            languageText = snapshot.data!.languageCode == 'fr' ? AppLocalizations.of(context).translate('french') : AppLocalizations.of(context).translate('english');
           }
 
           return ListTile(
             leading: Icon(
               Icons.language,
-              color: AppColors.primary,
+              color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
             ),
             title: Text(
-              'Langue de l\'application',
+              AppLocalizations.of(context).translate('language_setting'),
               style: TextStyle(
                 fontWeight: FontWeight.w500,
               ),
@@ -141,29 +141,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  // Carte pour le thème
+  // Carte pour le thème avec switch
   Widget _buildThemeCard() {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Card(
       elevation: 0,
       margin: const EdgeInsets.only(bottom: AppSizes.s),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
       ),
-      child: ListTile(
-        leading: Icon(
-          Icons.dark_mode,
-          color: AppColors.primary,
+      child: SwitchListTile(
+        secondary: Icon(
+          isDarkMode ? Icons.dark_mode : Icons.light_mode,
+          color: isDarkMode ? AppColors.darkPrimary : AppColors.lightPrimary,
         ),
         title: Text(
-          'Thème de l\'application',
+          AppLocalizations.of(context).translate('dark_mode_setting'),
           style: TextStyle(
             fontWeight: FontWeight.w500,
           ),
         ),
-        subtitle: Text(Theme.of(context).brightness == Brightness.dark ? 'Mode nuit' : 'Mode jour'),
-        trailing: Icon(Icons.arrow_forward_ios, size: 16),
-        onTap: () => _showThemeDialog(),
+        subtitle: Text(isDarkMode ? AppLocalizations.of(context).translate('enabled') : AppLocalizations.of(context).translate('disabled')),
+        value: isDarkMode,
+        activeColor: AppColors.darkPrimary,
+        onChanged: (bool value) {
+          _toggleTheme();
+        },
       ),
     );
   }
@@ -174,26 +178,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Choisir la langue'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text('Français'),
-                leading: Icon(Icons.check, color: AppColors.primary),
-                onTap: () => _changeLanguage('fr'),
-              ),
-              ListTile(
-                title: Text('English'),
-                leading: Icon(Icons.language),
-                onTap: () => _changeLanguage('en'),
-              ),
-            ],
+          title: Text(AppLocalizations.of(context).translate('choose_language')),
+          content: FutureBuilder<Locale>(
+            future: AppLocalizations.getLocale(),
+            builder: (context, snapshot) {
+              final currentLanguage = snapshot.data?.languageCode ?? 'fr';
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text(AppLocalizations.of(context).translate('french')),
+                    leading: Icon(
+                      currentLanguage == 'fr' ? Icons.check : Icons.language,
+                      color: currentLanguage == 'fr' ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary) : null,
+                    ),
+                    onTap: () => _changeLanguage('fr'),
+                  ),
+                  ListTile(
+                    title: Text(AppLocalizations.of(context).translate('english')),
+                    leading: Icon(
+                      currentLanguage == 'en' ? Icons.check : Icons.language,
+                      color: currentLanguage == 'en' ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary) : null,
+                    ),
+                    onTap: () => _changeLanguage('en'),
+                  ),
+                ],
+              );
+            },
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Annuler'),
+              child: Text(AppLocalizations.of(context).translate('cancel')),
             ),
           ],
         );
@@ -201,60 +217,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  // Boîte de dialogue pour changer le thème
-  void _showThemeDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Choisir le thème'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text('Mode jour'),
-                leading: Icon(Icons.light_mode, color: AppColors.warning),
-                onTap: () => _changeTheme(ThemeMode.light),
-              ),
-              ListTile(
-                title: Text('Mode nuit'),
-                leading: Icon(Icons.dark_mode, color: AppColors.primary),
-                onTap: () => _changeTheme(ThemeMode.dark),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Annuler'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // Basculer entre les thèmes
+  void _toggleTheme() async {
+    final newThemeMode = await ThemeService.toggleThemeMode();
 
-  // Changer le thème
-  void _changeTheme(ThemeMode themeMode) async {
-    await ThemeService.setThemeMode(themeMode);
+    // Notifier le widget parent du changement de thème
+    if (widget.onThemeChanged != null) {
+      widget.onThemeChanged!(newThemeMode);
+    }
+
+    // Afficher un message de confirmation
     if (mounted) {
-      Navigator.pop(context); // Fermer la boîte de dialogue
-
-      // Notifier le widget parent du changement de thème
-      if (widget.onThemeChanged != null) {
-        widget.onThemeChanged!(themeMode);
-      }
-
-      // Afficher un message de confirmation
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Thème changé en ${themeMode == ThemeMode.dark ? 'mode nuit' : 'mode jour'}'),
+          content: Text('${AppLocalizations.of(context).translate('theme_changed')} ${newThemeMode == ThemeMode.dark ? AppLocalizations.of(context).translate('dark_mode') : AppLocalizations.of(context).translate('light_mode')}'),
           backgroundColor: AppColors.success,
           duration: Duration(seconds: 2),
         ),
       );
     }
   }
+
+
 
   // Changer la langue
   void _changeLanguage(String languageCode) async {
@@ -270,7 +254,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // Afficher un message de confirmation
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Langue changée en ${languageCode == 'fr' ? 'français' : 'anglais'}'),
+          content: Text('${AppLocalizations.of(context).translate('language_changed')} ${languageCode == 'fr' ? AppLocalizations.of(context).translate('to_french') : AppLocalizations.of(context).translate('to_english')}'),
           backgroundColor: AppColors.success,
           duration: const Duration(seconds: 2),
         ),
@@ -293,7 +277,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: AppColors.primary,
+          color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
         ),
       ),
     );
@@ -312,12 +296,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       margin: const EdgeInsets.only(bottom: AppSizes.s),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
       ),
       child: ListTile(
         leading: Icon(
           icon,
-          color: iconColor ?? AppColors.primary,
+          color: iconColor ?? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary),
         ),
         title: Text(
           title,
@@ -336,7 +320,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _exportDataToCSV() async {
     try {
       // Afficher un indicateur de chargement
-      _showLoadingDialog('Exportation des données en cours...');
+      _showLoadingDialog(AppLocalizations.of(context).translate('exporting_data'));
 
       // Exporter les données
       final result = await _dataExportService.exportToCSV();
@@ -348,7 +332,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(kIsWeb ? 'Fichier CSV téléchargé avec succès' : 'Données exportées avec succès dans: $result'),
+            content: Text(kIsWeb ? AppLocalizations.of(context).translate('csv_downloaded') : '${AppLocalizations.of(context).translate('data_exported')}: $result'),
             backgroundColor: AppColors.success,
             duration: const Duration(seconds: 4),
           ),
@@ -362,7 +346,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur lors de l\'exportation: $e'),
+            content: Text('${AppLocalizations.of(context).translate('error_exporting')}: $e'),
             backgroundColor: AppColors.danger,
             duration: const Duration(seconds: 3),
           ),
@@ -375,7 +359,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _exportDataToPDF() async {
     try {
       // Afficher un indicateur de chargement
-      _showLoadingDialog('Génération du PDF en cours...');
+      _showLoadingDialog(AppLocalizations.of(context).translate('generating_pdf'));
 
       // Exporter les données
       final result = await _dataExportService.exportToPDF();
@@ -387,7 +371,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(kIsWeb ? 'Rapport PDF téléchargé avec succès' : 'PDF généré avec succès dans: $result'),
+            content: Text(kIsWeb ? AppLocalizations.of(context).translate('pdf_downloaded') : '${AppLocalizations.of(context).translate('pdf_generated')}: $result'),
             backgroundColor: AppColors.success,
             duration: const Duration(seconds: 4),
           ),
@@ -401,7 +385,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur lors de la génération du PDF: $e'),
+            content: Text('${AppLocalizations.of(context).translate('error_generating_pdf')}: $e'),
             backgroundColor: AppColors.danger,
             duration: const Duration(seconds: 3),
           ),
@@ -424,7 +408,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
 
       // Afficher un indicateur de chargement
-      _showLoadingDialog('Importation des données en cours...');
+      _showLoadingDialog(AppLocalizations.of(context).translate('importing_data'));
 
       // Lire le contenu du fichier
       String csvContent = '';
@@ -436,7 +420,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         final file = File(result.files.single.path!);
         csvContent = await file.readAsString();
       } else {
-        throw Exception('Impossible de lire le fichier');
+        throw Exception(AppLocalizations.of(context).translate('cannot_read_file'));
       }
 
       // Importer les données
@@ -449,7 +433,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Données importées avec succès'),
+            content: Text(AppLocalizations.of(context).translate('data_imported')),
             backgroundColor: AppColors.success,
             duration: Duration(seconds: 2),
           ),
@@ -463,7 +447,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur lors de l\'importation: $e'),
+            content: Text('${AppLocalizations.of(context).translate('error_importing')}: $e'),
             backgroundColor: AppColors.danger,
             duration: const Duration(seconds: 3),
           ),
@@ -498,16 +482,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Réinitialiser les données'),
-          content: const Text(
-            'Êtes-vous sûr de vouloir supprimer toutes les données de l\'application ? Cette action est irréversible.',
+          title: Text(AppLocalizations.of(context).translate('reset_data')),
+          content: Text(
+            AppLocalizations.of(context).translate('reset_confirmation'),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Annuler'),
+              child: Text(AppLocalizations.of(context).translate('cancel')),
             ),
             TextButton(
               onPressed: () {
@@ -517,7 +501,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: TextButton.styleFrom(
                 foregroundColor: AppColors.danger,
               ),
-              child: const Text('Réinitialiser'),
+              child: Text(AppLocalizations.of(context).translate('reset')),
             ),
           ],
         );
@@ -529,7 +513,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _resetAllData() async {
     try {
       // Afficher un indicateur de chargement
-      _showLoadingDialog('Réinitialisation des données en cours...');
+      _showLoadingDialog(AppLocalizations.of(context).translate('resetting_data'));
 
       // Réinitialiser les données
       await _dataExportService.resetAllData();
@@ -541,7 +525,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Données réinitialisées avec succès'),
+            content: Text(AppLocalizations.of(context).translate('data_reset')),
             backgroundColor: AppColors.success,
             duration: Duration(seconds: 2),
           ),
@@ -563,7 +547,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur lors de la réinitialisation: $e'),
+            content: Text('${AppLocalizations.of(context).translate('error_resetting')}: $e'),
             backgroundColor: AppColors.danger,
             duration: const Duration(seconds: 3),
           ),

@@ -8,6 +8,7 @@ import '../widgets/custom_button.dart';
 import '../utils/number_formatter.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import '../localization/app_localizations.dart';
 
 class MonthlySummaryScreen extends StatefulWidget {
   const MonthlySummaryScreen({super.key});
@@ -30,10 +31,13 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialiser la localisation pour les dates en français
-    initializeDateFormatting('fr_FR', null).then((_) {
-      _monthFormatter = DateFormat('MMMM yyyy', 'fr_FR');
-      _loadData();
+    // Initialiser la localisation pour les dates selon la langue de l'application
+    AppLocalizations.getLocale().then((locale) {
+      String localeCode = locale.languageCode == 'fr' ? 'fr_FR' : 'en_US';
+      initializeDateFormatting(localeCode, null).then((_) {
+        _monthFormatter = DateFormat('MMMM yyyy', localeCode);
+        _loadData();
+      });
     });
   }
 
@@ -89,13 +93,13 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Transaction supprimée avec succès')),
+          SnackBar(content: Text(AppLocalizations.of(context).translate('transaction_deleted'))),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erreur lors de la suppression de la transaction')),
+          SnackBar(content: Text(AppLocalizations.of(context).translate('error_deleting_transaction'))),
         );
       }
     }
@@ -158,7 +162,7 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erreur lors du chargement des données')),
+          SnackBar(content: Text(AppLocalizations.of(context).translate('error_loading_data'))),
         );
       }
     }
@@ -229,12 +233,12 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppTexts.monthlyTitle),
+        title: Text(AppLocalizations.of(context).translate(AppTexts.monthlyTitle)),
         actions: [
           IconButton(
             icon: const Icon(Icons.calendar_month),
             onPressed: _selectMonth,
-            tooltip: 'Changer de mois',
+            tooltip: AppLocalizations.of(context).translate('change_month'),
           ),
         ],
       ),
@@ -249,18 +253,18 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                   // En-tête avec le mois sélectionné
                   Container(
                     padding: const EdgeInsets.all(AppSizes.m),
-                    color: AppColors.cardPrimary,
+                    color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardPrimary : AppColors.lightCardPrimary,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.calendar_today, color: AppColors.primary),
+                        Icon(Icons.calendar_today, color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary),
                         const SizedBox(width: AppSizes.s),
                         Text(
                           _monthFormatter.format(_selectedMonth),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
+                            color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkPrimary : AppColors.lightPrimary,
                           ),
                         ),
                       ],
@@ -273,7 +277,7 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                     child: Column(
                       children: [
                         _buildSummaryCard(
-                          AppTexts.earnedThisMonth,
+                          AppLocalizations.of(context).translate(AppTexts.earnedThisMonth),
                           _totalSales,
                           AppColors.success,
                         ),
@@ -281,7 +285,7 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                         const SizedBox(height: AppSizes.m),
 
                         _buildSummaryCard(
-                          AppTexts.spentThisMonth,
+                          AppLocalizations.of(context).translate(AppTexts.spentThisMonth),
                           _totalPurchases,
                           AppColors.warning,
                         ),
@@ -296,10 +300,12 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                         // Carte pour le solde global (plus visible)
                         Card(
                           elevation: 1,
-                          color: _balance >= 0 ? AppColors.cardSuccess : AppColors.cardDanger,
+                          color: _balance >= 0
+                            ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardSuccess : AppColors.lightCardSuccess)
+                            : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkCardDanger : AppColors.lightCardDanger),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-                            side: BorderSide(color: Colors.grey.shade200),
+                            side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(AppSizes.m),
@@ -309,8 +315,8 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text(
-                                      AppTexts.remainingMoney,
+                                    Text(
+                                      AppLocalizations.of(context).translate(AppTexts.remainingMoney),
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -319,7 +325,9 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                                     ),
                                     Icon(
                                       _balance >= 0 ? Icons.thumb_up : Icons.thumb_down,
-                                      color: _balance >= 0 ? AppColors.success : AppColors.danger,
+                                      color: _balance >= 0
+                                        ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkSuccess : AppColors.lightSuccess)
+                                        : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkDanger : AppColors.lightDanger),
                                     ),
                                   ],
                                 ),
@@ -327,7 +335,7 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.s),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
                                     borderRadius: BorderRadius.circular(AppSizes.s),
                                     boxShadow: [
                                       BoxShadow(
@@ -342,7 +350,9 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                                     style: TextStyle(
                                       fontSize: 28,
                                       fontWeight: FontWeight.bold,
-                                      color: _balance >= 0 ? AppColors.success : AppColors.danger,
+                                      color: _balance >= 0
+                                        ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkSuccess : AppColors.lightSuccess)
+                                        : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkDanger : AppColors.lightDanger),
                                     ),
                                   ),
                                 ),
@@ -354,16 +364,16 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                                 Container(
                                   padding: const EdgeInsets.all(AppSizes.m),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
                                     borderRadius: BorderRadius.circular(AppSizes.s),
-                                    border: Border.all(color: Colors.grey.shade200),
+                                    border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade700 : Colors.grey.shade200),
                                   ),
                                   child: Column(
                                     children: [
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text('Ventes:', style: TextStyle(fontWeight: FontWeight.w500)),
+                                          Text(AppLocalizations.of(context).translate('sales'), style: const TextStyle(fontWeight: FontWeight.w500)),
                                           Container(
                                             padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.xs),
                                             decoration: BoxDecoration(
@@ -383,7 +393,7 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text('Achats:', style: TextStyle(fontWeight: FontWeight.w500)),
+                                          Text(AppLocalizations.of(context).translate('purchases'), style: const TextStyle(fontWeight: FontWeight.w500)),
                                           Container(
                                             padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.xs),
                                             decoration: BoxDecoration(
@@ -403,7 +413,7 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text('Transactions du portefeuille:', style: TextStyle(fontWeight: FontWeight.w500)),
+                                          Text('${AppLocalizations.of(context).translate('wallet_transactions')}:', style: const TextStyle(fontWeight: FontWeight.w500)),
                                           Container(
                                             padding: const EdgeInsets.symmetric(horizontal: AppSizes.m, vertical: AppSizes.xs),
                                             decoration: BoxDecoration(
@@ -413,7 +423,9 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                                             child: Text(
                                               '${_walletTransactionsBalance >= 0 ? '+' : ''}${NumberFormatter.formatEuro(NumberFormatter.roundToTwoDecimals(_walletTransactionsBalance))}',
                                               style: TextStyle(
-                                                color: _walletTransactionsBalance >= 0 ? AppColors.success : AppColors.danger,
+                                                color: _walletTransactionsBalance >= 0
+                                                  ? (Theme.of(context).brightness == Brightness.dark ? AppColors.darkSuccess : AppColors.lightSuccess)
+                                                  : (Theme.of(context).brightness == Brightness.dark ? AppColors.darkDanger : AppColors.lightDanger),
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
@@ -431,28 +443,28 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                         const SizedBox(height: AppSizes.m),
 
                         CustomButton(
-                          text: AppTexts.export,
+                          text: AppLocalizations.of(context).translate(AppTexts.export),
                           icon: Icons.picture_as_pdf,
                           onPressed: () {
                             // Fonctionnalité d'export PDF (à implémenter)
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Export PDF à venir dans une prochaine version')),
+                              SnackBar(content: Text(AppLocalizations.of(context).translate('pdf_export_coming_soon'))),
                             );
                           },
-                          color: AppColors.secondary,
+                          color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSecondary : AppColors.lightSecondary,
                         ),
                       ],
                     ),
                   ),
 
                   // Liste des transactions
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppSizes.m),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSizes.m),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Transactions du mois',
-                        style: TextStyle(
+                        AppLocalizations.of(context).translate('monthly_transactions'),
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -461,12 +473,12 @@ class _MonthlySummaryScreenState extends State<MonthlySummaryScreen> {
                   ),
 
                   _transactions.isEmpty
-                      ? const Padding(
-                          padding: EdgeInsets.all(AppSizes.xl),
+                      ? Padding(
+                          padding: const EdgeInsets.all(AppSizes.xl),
                           child: Center(
                             child: Text(
-                              'Aucune transaction pour ce mois',
-                              style: TextStyle(color: AppColors.textSecondary),
+                              AppLocalizations.of(context).translate('no_transactions_for_month'),
+                              style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
                             ),
                           ),
                         )

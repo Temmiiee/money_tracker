@@ -30,21 +30,18 @@ class DataExportService {
       // Créer le contenu CSV pour les produits
       final productsCSV = _productsToCSV(products);
 
-      // Créer deux fichiers CSV séparés
-      final transactionsFilePath = await _saveToFile(
-        transactionsCSV,
-        'money_tracker_transactions.csv',
+      // Combiner les deux CSV en un seul fichier avec des sections
+      final combinedCSV = "TRANSACTIONS\n$transactionsCSV\n\nPRODUCTS\n$productsCSV";
+
+      // Créer un seul fichier CSV combiné
+      final filePath = await _saveToFile(
+        combinedCSV,
+        'money_tracker_data.csv',
         mimeType: 'text/csv'
       );
 
-      await _saveToFile(
-        productsCSV,
-        'money_tracker_products.csv',
-        mimeType: 'text/csv'
-      );
-
-      // Retourner le chemin du fichier de transactions (principal)
-      return transactionsFilePath;
+      // Retourner le chemin du fichier
+      return filePath;
     } catch (e) {
       rethrow;
     }
@@ -60,8 +57,15 @@ class DataExportService {
       final totalPurchases = await _storageService.getCurrentMonthPurchases();
       final balance = await _storageService.getGlobalBalance();
 
-      // Créer un document PDF simple
-      final pdf = pw.Document();
+      // Créer un document PDF simple avec une police compatible Unicode
+      final pdf = pw.Document(
+        theme: pw.ThemeData.withFont(
+          base: pw.Font.courier(),
+          bold: pw.Font.courierBold(),
+          italic: pw.Font.courierOblique(),
+          boldItalic: pw.Font.courierBoldOblique(),
+        ),
+      );
 
       // Note: Nous utilisons la police par défaut de la bibliothèque PDF
       // mais nous modifions le formatage pour éviter les problèmes avec le symbole €

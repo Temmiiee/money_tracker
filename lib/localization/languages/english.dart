@@ -2,6 +2,7 @@
 final Map<String, String> english = {
   // Titres des écrans
   'app_name': 'Money Tracker',
+  'app_tagline': 'Manage your finances simply',
   'home_title': 'Home',
   'sell_title': 'I\'m selling something',
   'purchase_title': 'I bought something',
@@ -9,7 +10,7 @@ final Map<String, String> english = {
   'inventory_title': 'My inventory',
   'monthly_title': 'My month',
   'settings_title': 'Settings',
-  
+
   // Textes de l'écran d'accueil
   'hello': 'Hello!',
   'earned_this_month': 'Money earned this month',
@@ -20,7 +21,7 @@ final Map<String, String> english = {
   'no_recent_transactions': 'No recent transactions',
   'sales': 'Sales:',
   'purchases': 'Purchases:',
-  
+
   // Textes des formulaires
   'what_item': 'What?',
   'price': 'Price',
@@ -29,16 +30,40 @@ final Map<String, String> english = {
   'sold_multiple': 'I sold multiple',
   'add_quick_sale': 'Add a quick sale',
   'quantity': 'Quantity',
+  'units': 'units',
+  'per_unit': 'per unit',
+  'select_product': 'Select a product',
+  'select_product_to_restock': 'Select a product to restock',
+  'or_enter_name_manually': 'Or enter name manually',
+  'enter_name_or_select_product': 'Please enter a name or select a product',
+  'enter_quantity': 'Please enter a quantity',
+  'quantity_must_be_positive': 'Quantity must be greater than 0',
+  'unit_purchase_price': 'Purchase price/u',
+  'price_per_unit': 'Price per unit',
+  'price_for_group': 'Price for the whole group',
+  'price_mode_changed': 'Price mode changed to',
+  'unit_price': 'Unit price',
+  'enter_amount': 'Please enter an amount',
+  'enter_valid_amount': 'Please enter a valid amount',
+  'calculation': 'Calculation',
+  'total_amount': 'Total amount',
+  'calculated_unit_price': 'Calculated unit price',
+  'product_category': 'Product category',
+  'clear': 'Clear',
+  'total_amount_calculated_automatically': 'Total amount calculated automatically',
+  'insufficient_stock': 'Insufficient stock quantity',
+  'sale_details': 'Sale details',
+  'purchase_details': 'Purchase details',
+  'for_stock': 'For stock',
+  'multiple_sale': 'Multiple sale',
   'category': 'Category',
   'select_category': 'Select a category',
-  'select_product': 'Select a product',
   'or_enter_manually': 'or enter manually',
-  'price_per_unit': 'Price per unit',
   'total_price': 'Total price',
   'description': 'Description',
   'notes': 'Notes (optional)',
   'date': 'Date',
-  
+
   // Boutons
   'save': 'Save',
   'cancel': 'Cancel',
@@ -50,26 +75,36 @@ final Map<String, String> english = {
   'import_csv': 'Import CSV',
   'reset_data': 'Reset data',
   'confirm': 'Confirm',
-  
+
   // Catégories
   'food': 'Food',
   'art': 'Art',
   'merchandise': 'Merchandise',
   'supplies': 'Supplies',
   'other': 'Other',
-  
+
   // Types de transactions
   'sale': 'Sale',
   'purchase': 'Purchase',
   'wallet': 'Wallet',
-  
+
   // Portefeuille
   'add_money': 'Add money',
   'remove_money': 'Remove money',
   'deposit': 'Deposit',
   'withdrawal': 'Withdrawal',
   'amount': 'Amount',
-  
+  'amount_to_add': 'Amount to add',
+  'amount_to_remove': 'Amount to remove',
+  'add_to_wallet': 'Add to wallet',
+  'remove_from_wallet': 'Remove from wallet',
+  'add_remove_money': 'Add or remove money',
+  'wallet_transactions': 'Wallet transactions',
+  'transaction_history': 'Transaction history',
+  'no_transactions': 'No transactions',
+  'calculation_details': 'Calculation details',
+  'description_hint': 'Ex: Bank withdrawal, Donation, etc.',
+
   // Inventaire
   'inventory_stats': 'Inventory statistics',
   'total_products': 'Total products',
@@ -77,19 +112,45 @@ final Map<String, String> english = {
   'add_product': 'Add product',
   'edit_product': 'Edit product',
   'product_name': 'Product name',
-  'unit_price': 'Unit price',
+  'product_unit_price': 'Unit price',
   'stock_quantity': 'Stock quantity',
   'no_products': 'No products in stock',
-  
+  'no_products_to_restock': 'No products to restock',
+  'to_restock': 'To restock',
+  'show_low_stock_only': 'Show low stock only',
+  'selling_price_per_unit': 'Selling price/u',
+  'please_enter_name': 'Please enter a name',
+  'please_enter_price': 'Please enter a price',
+  'please_enter_valid_price': 'Please enter a valid price',
+  'error_loading_products': 'Error loading products',
+  'error_deleting_product': 'Error deleting product',
+
   // Paramètres
   'language': 'Language',
+  'language_setting': 'Application language',
+  'choose_language': 'Choose language',
   'french': 'French',
   'english': 'English',
+  'to_french': 'to French',
+  'to_english': 'to English',
+  'language_changed': 'Language changed',
+  'theme_changed': 'Theme changed to',
+  'dark_mode': 'dark mode',
+  'dark_mode_setting': 'Dark mode',
+  'light_mode': 'light mode',
+  'enabled': 'Enabled',
+  'disabled': 'Disabled',
+  'appearance': 'Appearance',
   'data_management': 'Data management',
   'about': 'About',
   'version': 'Version',
+  'loading': 'Loading...',
+  'export_csv_desc': 'Export all your data to CSV format',
+  'export_pdf_desc': 'Export a report to PDF format',
+  'import_csv_desc': 'Import data from a CSV file',
+  'reset_data_desc': 'Delete all application data',
   'reset_confirmation': 'Are you sure you want to reset all data? This action is irreversible.',
-  
+
   // Messages
   'data_saved': 'Data saved successfully',
   'error_saving': 'Error saving data',
@@ -105,7 +166,27 @@ final Map<String, String> english = {
   'data_imported': 'Data imported successfully',
   'data_reset': 'Data reset successfully',
   'error_occurred': 'An error occurred',
-  
+  'error_loading_data': 'Error loading data',
+  'error_deleting_transaction': 'Error deleting transaction',
+  'change_month': 'Change month',
+  'monthly_transactions': 'Monthly transactions',
+  'no_transactions_for_month': 'No transactions for this month',
+  'pdf_export_coming_soon': 'PDF export coming soon in a future version',
+  'financial_distribution': 'Financial Distribution',
+  'exporting_data': 'Exporting data...',
+  'csv_downloaded': 'CSV file downloaded successfully',
+  'error_exporting': 'Error exporting data',
+  'generating_pdf': 'Generating PDF...',
+  'pdf_downloaded': 'PDF report downloaded successfully',
+  'pdf_generated': 'PDF generated successfully in',
+  'error_generating_pdf': 'Error generating PDF',
+  'importing_data': 'Importing data...',
+  'cannot_read_file': 'Cannot read file',
+  'error_importing': 'Error importing data',
+  'reset': 'Reset',
+  'resetting_data': 'Resetting data...',
+  'error_resetting': 'Error resetting data',
+
   // Mois
   'january': 'January',
   'february': 'February',
