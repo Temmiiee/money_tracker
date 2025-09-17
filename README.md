@@ -30,35 +30,12 @@ Une application mobile simple et intuitive pour suivre vos finances, ventes, ach
 - Liste des transactions du mois
 - Bilan financier (Revenus - Dépenses)
 
-## Public cible
-
-- Personnes qui ont des difficultés à gérer leurs dépenses
-- Personnes ayant des difficultés en mathématiques
-- Petits commerces cherchant une méthode simple pour enregistrer leurs ventes
-
-## Caractéristiques
-
-- Interface utilisateur simple et intuitive
-- Langage clair, sans jargon technique
-- Navigation facile (2-3 clics maximum)
-- Design épuré avec des couleurs douces et des icônes explicites
-
 ## Installation
 
 1. Assurez-vous d'avoir Flutter installé sur votre machine
 2. Clonez ce dépôt
 3. Exécutez `flutter pub get` pour installer les dépendances
 4. Lancez l'application avec `flutter run`
-
-## Publication sur le Google Play Store
-
-Voici les étapes à suivre pour publier l'application sur le Google Play Store :
-
-### 1. Préparer l'application
-
-1. Mettez à jour la version de l'application dans `pubspec.yaml` si nécessaire
-2. Retirez la ligne `publish_to: 'none'` du fichier `pubspec.yaml`
-3. Assurez-vous que tous les tests passent et que l'application fonctionne correctement
 
 ### 2. Générer le fichier APK signé
 
